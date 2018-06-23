@@ -1,5 +1,7 @@
 import curses
 import input_handler
+import rendering
+from entity import Entity
 
 
 def main(stdscr):
@@ -10,28 +12,31 @@ def main(stdscr):
     begin_y = base_height//2 - height//2
 
     # TODO: move to colors.py
-    curses.init_pair(1, curses.COLOR_WHITE, curses.COLOR_WHITE)
+    curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_BLACK)
 
     win = curses.newwin(height, width, begin_y, begin_x)
+    stdscr.bkgd(' ',curses.color_pair(-1))
+    stdscr.refresh()
     win.bkgd(' ', curses.color_pair(1))
-
-    curr_pos = {'x': width//2, 'y': height//2}
-    curses.curs_set(0)  # hide cursor
-    curses.init_pair(35, curses.COLOR_RED, curses.COLOR_WHITE)
-    win.addstr(curr_pos['y'], curr_pos['x'], "@", curses.color_pair(35))
     win.refresh()
+
+    curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)
+    player = Entity(width//2, height//2, '@', curses.color_pair(2))
+    entities = [player]
+    curses.curs_set(0)  # hide cursor
+    rendering.render_all(win, entities, 0, 0)
+    curses.doupdate()  # TODO: move this to rendering.py?
 
     while True:
         action = input_handler.handle_input(win)
-        win.delch(curr_pos['y'], curr_pos['x'])
+        rendering.clear_entity(win, player)
         mv = action.get('move')
         if mv:
             dx, dy = mv
-            curr_pos['x'] += dx
-            curr_pos['y'] += dy
+            player.move(dx, dy)
         else:
             break
-        win.addstr(curr_pos['y'], curr_pos['x'], "@", curses.color_pair(35))
+        rendering.draw_entity(win, player)
     win.refresh()
 
 
