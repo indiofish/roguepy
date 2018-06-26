@@ -31,12 +31,14 @@ def draw_map(win, game_map, fov_recompute):
     for x, y in game_map:
         wall = not game_map.transparent[x, y]
         if game_map.fov[x, y]:
+            # if in fov then explored
+            game_map.explored[x][y] = True
             if wall:
                 win.addch(y, x, '#', colors.COLOR_LIGHT_GRAY)
             else:
                 win.addch(y, x, '.', colors.COLOR_GRAY)
-        else:
+        elif game_map.explored[x][y]:
             if wall:
-                win.addch(y, x, '#', colors.COLOR_BLACK)
+                win.addch(y, x, '#', colors.COLOR_WHITE_BOLD)
             else:
-                win.addch(y, x, '.', colors.COLOR_BLACK)
+                win.addch(y, x, '.', colors.COLOR_WHITE_BOLD)
