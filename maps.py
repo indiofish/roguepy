@@ -1,4 +1,21 @@
+from tdl.map import Map
 from random import randint
+
+
+class GameMap(Map):
+    def __init__(self, width, height):
+        super(GameMap, self).__init__(width, height)
+        self.explored = [[False for y in range(height)] for x in range(width)]
+
+    def compute_fov(self, player_x, player_y, fov='DIAMOND',
+                    radius=0, light_walls=True):
+        """simple override for simpler function usage"""
+        return super(GameMap, self).compute_fov(player_x, player_y,
+                                                fov=fov,
+                                                radius=radius,
+                                                light_walls=light_walls)
+
+
 class Rect:
     def __init__(self, x, y, w, h):
 
