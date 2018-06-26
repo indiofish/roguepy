@@ -18,6 +18,7 @@ COLOR_MAGENTA_BOLD = 0
 COLOR_CYAN_BOLD = 0
 COLOR_WHITE_BOLD = 0
 COLOR_DARK_GRAY = 0
+COLOR_LIGHT_GRAY = 0
 
 
 def init_colors():
@@ -39,6 +40,7 @@ def init_colors():
     global COLOR_CYAN_BOLD
     global COLOR_WHITE_BOLD
     global COLOR_DARK_GRAY
+    global COLOR_LIGHT_GRAY
 
     curses.use_default_colors()
     for i in range(curses.COLORS):
@@ -53,6 +55,7 @@ def init_colors():
     COLOR_BLUE = curses.color_pair(5)
     COLOR_MAGENTA = curses.color_pair(6)
     COLOR_CYAN = curses.color_pair(7)
+    # curses.init_pair(8, 7, 240)
     COLOR_GRAY = curses.color_pair(8)
     COLOR_RED_BOLD = curses.color_pair(10)
     COLOR_GREEN_BOLD = curses.color_pair(11)
@@ -62,3 +65,4 @@ def init_colors():
     COLOR_CYAN_BOLD = curses.color_pair(15)
     COLOR_WHITE_BOLD = curses.color_pair(16)
     COLOR_DARK_GRAY = curses.color_pair(237)
+    COLOR_LIGHT_GRAY = curses.color_pair(241)
