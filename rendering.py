@@ -1,11 +1,21 @@
 import curses
+import colors
 
-def render_all(win, entities, width, height):
+def render_all(win, entities, game_map, width, height, player_x, player_y,
+               stdscr):
+    draw_map(win, game_map)
     for e in entities:
         draw_entity(win, e)
 
-    # width and height will be used when we go to pad
-    win.noutrefresh()
+    # map_height, map_width = game_map.height, game_map.width
+    start_x = min(max(0, player_x - width // 2), game_map.width - width)
+    start_y = min(max(0, player_y - height // 2), game_map.height - height)
+    stdscr.addstr(20, 100, "x:" + str(player_x), colors.COLOR_WHITE_BOLD)
+    stdscr.addstr(21, 100, "y:"+str(player_y), colors.COLOR_WHITE_BOLD)
+    # stdscr.addstr(22, 100, "w:" + str(start_x), colors.COLOR_WHITE_BOLD)
+    # stdscr.addstr(23, 100, "h:"+str(start_y), colors.COLOR_WHITE_BOLD)
+    stdscr.refresh()
+    win.refresh(start_y, start_x, 0, 0, height, width)
 
 def clear_all(win, entities):
     for e in entities:
@@ -16,3 +26,12 @@ def draw_entity(win, entity):
 
 def clear_entity(win, entity):
     win.addch(entity.y, entity.x, ' ', curses.color_pair(1))
+
+def draw_map(win, game_map):
+    for x, y in game_map:
+        wall = not game_map.transparent[x, y]
+
+        if wall:
+            win.addch(y, x, '#', colors.COLOR_DARK_GRAY)
+        else:
+            win.addch(y, x, '^', colors.COLOR_GREEN)

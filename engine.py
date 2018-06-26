@@ -1,43 +1,53 @@
 import curses
+import tdl
 import input_handler
 import rendering
+import maps
+import colors
 from entity import Entity
 
 
 def main(stdscr):
-    base_height, base_width = stdscr.getmaxyx()
-    height = 30
-    width = 60
-    begin_x = base_width//2 - width//2
-    begin_y = base_height//2 - height//2
+    # temporary constants
+    room_max_size = 10
+    room_min_size = 5
+    max_rooms = 10
+    # base_height, base_width = stdscr.getmaxyx()
+    # TODO: get these values based on base_height/weight
+    height = 151
+    width = 150
+    win = curses.newpad(height, width)
 
-    # TODO: move to colors.py
-    curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_BLACK)
-
-    win = curses.newwin(height, width, begin_y, begin_x)
-    stdscr.bkgd(' ',curses.color_pair(-1))
+    colors.init_colors()
+    stdscr.bkgd(' ', colors.COLOR_BLACK)
+    stdscr.clear()
     stdscr.refresh()
-    win.bkgd(' ', curses.color_pair(1))
-    win.refresh()
 
-    curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)
-    player = Entity(width//2, height//2, '@', curses.color_pair(2))
-    entities = [player]
+    win.bkgd(' ', colors.COLOR_BLACK)
     curses.curs_set(0)  # hide cursor
-    rendering.render_all(win, entities, 0, 0)
-    curses.doupdate()  # TODO: move this to rendering.py?
+
+    map_height = 100
+    map_width = 100
+    game_map = tdl.map.Map(map_width, map_height)
+
+    player = Entity(0, 0, '@', colors.COLOR_WHITE_BOLD)
+
+    maps.generate_map(game_map, max_rooms, room_min_size, room_max_size,
+                      map_width, map_height, player)
+
+    entities = [player]
 
     while True:
+        rendering.render_all(win, entities, game_map, 60, 20, player.x,
+                             player.y, stdscr)
         action = input_handler.handle_input(win)
-        rendering.clear_entity(win, player)
         mv = action.get('move')
         if mv:
             dx, dy = mv
-            player.move(dx, dy)
+            if game_map.walkable[player.x+dx, player.y+dy]:
+                player.move(dx, dy)
         else:
             break
-        rendering.draw_entity(win, player)
-    win.refresh()
 
 
 curses.wrapper(main)
