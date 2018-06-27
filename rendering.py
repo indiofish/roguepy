@@ -39,6 +39,6 @@ def draw_map(win, game_map, fov_recompute):
                 win.addch(y, x, '.', color(GRAY))
         elif game_map.explored[x][y]:
             if wall:
-                win.addch(y, x, '#', color(WHITE_BOLD))
+                win.addch(y, x, '#', color(DARK_GRAY))
             else:
-                win.addch(y, x, '.', color(WHITE_BOLD))
+                win.addch(y, x, '.', color(DARK_GRAY))
