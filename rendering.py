@@ -1,5 +1,5 @@
 import curses
-import colors
+from colors import *
 
 def render_all(win, entities, game_map, width, height, player_x, player_y,
                fov_recompute):
@@ -25,7 +25,7 @@ def draw_entity(win, entity):
     win.addch(entity.y, entity.x, entity.rep, entity.color)
 
 def clear_entity(win, entity):
-    win.addch(entity.y, entity.x, ' ', curses.color_pair(1))
+    win.addch(entity.y, entity.x, ' ', color(BLACK))
 
 def draw_map(win, game_map, fov_recompute):
     for x, y in game_map:
@@ -34,11 +34,11 @@ def draw_map(win, game_map, fov_recompute):
             # if in fov then explored
             game_map.explored[x][y] = True
             if wall:
-                win.addch(y, x, '#', colors.COLOR_LIGHT_GRAY)
+                win.addch(y, x, '#', color(LIGHT_GRAY))
             else:
-                win.addch(y, x, '.', colors.COLOR_GRAY)
+                win.addch(y, x, '.', color(GRAY))
         elif game_map.explored[x][y]:
             if wall:
-                win.addch(y, x, '#', colors.COLOR_WHITE_BOLD)
+                win.addch(y, x, '#', color(WHITE_BOLD))
             else:
-                win.addch(y, x, '.', colors.COLOR_WHITE_BOLD)
+                win.addch(y, x, '.', color(WHITE_BOLD))
