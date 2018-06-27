@@ -2,8 +2,8 @@ import curses
 from colors import *
 
 def render_all(win, entities, game_map, width, height, player_x, player_y,
-               fov_recompute):
-    draw_map(win, game_map, fov_recompute)
+               base_w, base_h):
+    draw_map(win, game_map)
     for e in entities:
         draw_entity(win, e)
 
@@ -15,19 +15,23 @@ def render_all(win, entities, game_map, width, height, player_x, player_y,
     # stdscr.addstr(22, 100, "w:" + str(start_x), colors.COLOR_WHITE_BOLD)
     # stdscr.addstr(23, 100, "h:"+str(start_y), colors.COLOR_WHITE_BOLD)
     # stdscr.refresh()
-    win.refresh(start_y, start_x, 0, 0, height, width)
+
+    # calculate the start of the position it is displayed
+    pos_x = (base_w - width) // 2
+    pos_y = (base_h - height) // 2
+    win.refresh(start_y, start_x, pos_y, pos_x, height+pos_y, width+pos_x)
 
 def clear_all(win, entities):
     for e in entities:
         clear_entity(win, e)
 
 def draw_entity(win, entity):
-    win.addch(entity.y, entity.x, entity.rep, entity.color)
+    win.addstr(entity.y, entity.x, entity.rep, entity.color)
 
 def clear_entity(win, entity):
     win.addch(entity.y, entity.x, ' ', color(BLACK))
 
-def draw_map(win, game_map, fov_recompute):
+def draw_map(win, game_map):
     for x, y in game_map:
         wall = not game_map.transparent[x, y]
         if game_map.fov[x, y]:

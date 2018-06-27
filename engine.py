@@ -5,24 +5,21 @@ import rendering
 import maps
 from colors import *
 from entity import Entity
+# import locale
 
 
 def main(stdscr):
+    # locale.setlocale(locale.LC_ALL, '')
     # temporary constants
     room_max_size = 10
     room_min_size = 5
-    max_rooms = 10
+    max_rooms = 15
 
-    fov_algorithm = 'BASIC'
-    fov_light_walls = True
-    fov_radius = 10
-    fov_recompute = True
-    # base_height, base_width = stdscr.getmaxyx()
-    # TODO: get these values based on base_height/weight
     height = 151
     width = 150
     win = curses.newpad(height, width)
 
+    base_height, base_width = stdscr.getmaxyx()
     init_colors()
     stdscr.bkgd(' ', color(BLACK))
     stdscr.clear()
@@ -31,8 +28,8 @@ def main(stdscr):
     win.bkgd(' ', color(BLACK))
     curses.curs_set(0)  # hide cursor
 
-    map_height = 100
-    map_width = 100
+    map_height = 150
+    map_width = 150
     game_map = maps.GameMap(map_width, map_height)
 
     player = Entity(0, 0, '@', color(WHITE_BOLD))
@@ -45,9 +42,8 @@ def main(stdscr):
     # initial compute
     game_map.compute_fov(player.x, player.y)
     while True:
-        rendering.render_all(win, entities, game_map, 60, 20, player.x,
-                             player.y, fov_recompute)
-        fov_recompute = False
+        rendering.render_all(win, entities, game_map, 70, 30, player.x,
+                             player.y, base_width, base_height)
         action = input_handler.handle_input(win)
         mv = action.get('move')
         if mv:
