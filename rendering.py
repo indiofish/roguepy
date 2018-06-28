@@ -1,6 +1,7 @@
-import curses
 from colors import color
 import colors
+import tileset
+
 
 def render_all(win, entities, game_map, width, height, player_x, player_y,
                base_w, base_h):
@@ -22,15 +23,19 @@ def render_all(win, entities, game_map, width, height, player_x, player_y,
     pos_y = (base_h - height) // 2
     win.refresh(start_y, start_x, pos_y, pos_x, height+pos_y, width+pos_x)
 
+
 def clear_all(win, entities):
     for e in entities:
         clear_entity(win, e)
 
+
 def draw_entity(win, entity):
     win.addstr(entity.y, entity.x, entity.rep, entity.color)
 
+
 def clear_entity(win, entity):
     win.addch(entity.y, entity.x, ' ', color(colors.BLACK))
+
 
 def draw_map(win, game_map):
     for x, y in game_map:
@@ -39,11 +44,11 @@ def draw_map(win, game_map):
             # if in fov then explored
             game_map.explored[x][y] = True
             if wall:
-                win.addch(y, x, '#', color(colors.LIGHT_GRAY))
+                win.addch(y, x, tileset.WALL, color(colors.LIGHT_GRAY))
             else:
-                win.addch(y, x, '.', color(colors.LIGHT_GRAY))
+                win.addch(y, x, tileset.FLOOR, color(colors.LIGHT_GRAY))
         elif game_map.explored[x][y]:
             if wall:
-                win.addch(y, x, '#', color(colors.DARK_GRAY))
+                win.addch(y, x, tileset.WALL, color(colors.DARK_GRAY))
             else:
-                win.addch(y, x, '.', color(colors.DARK_GRAY))
+                win.addch(y, x, tileset.FLOOR, color(colors.DARK_GRAY))

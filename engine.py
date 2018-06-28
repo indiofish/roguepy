@@ -1,50 +1,59 @@
 import curses
-import tdl
+# import tdl
 import input_handler
 import rendering
 import maps
 from colors import color
 import colors
 from entity import Entity
+import tileset
 # import locale
 
 
 def main(stdscr):
     # locale.setlocale(locale.LC_ALL, '')
-    # temporary constants
+
+    # constants related to rooms
     room_max_size = 10
     room_min_size = 5
     max_rooms = 15
 
+    # constants related to padding size
+    # either height/width has to be larger than their counterparts of map
+    # becuase writing on the bottom right corner of the padding causes an error
     height = 151
     width = 150
-    win = curses.newpad(height, width)
-
-    base_height, base_width = stdscr.getmaxyx()
-    colors.init_colors()
-    stdscr.bkgd(' ')
-    stdscr.clear()
-    stdscr.refresh()
-
-    win.bkgd(' ')
-    curses.curs_set(0)  # hide cursor
-
+    # constants related to map size
     map_height = 150
     map_width = 150
+    # get size of the screen for positioning
+    base_height, base_width = stdscr.getmaxyx()
+    # constants related to view size
+    #TODO: change view size in relation to screen size
+    view_width = 70
+    view_height = 24
+
+    # stdscr is automatically init by wrapper()
+    stdscr.bkgd(' ')
+
+    # win has to be a pad, so that scrolling is easily supported
+    win = curses.newpad(height, width)
+    win.bkgd(' ')
+
+    colors.init_colors()
+    curses.curs_set(0)  # hide cursor
+
+    player = Entity(0, 0, tileset.PLAYER, color(colors.WHITE_BOLD))
+    entities = [player]
     game_map = maps.GameMap(map_width, map_height)
-
-    player = Entity(0, 0, '@', color(colors.WHITE_BOLD))
-
     maps.generate_map(game_map, max_rooms, room_min_size, room_max_size,
                       map_width, map_height, player)
 
-    entities = [player]
-
-    # initial compute
+    # initial compute of fov
     game_map.compute_fov(player.x, player.y)
     while True:
-        rendering.render_all(win, entities, game_map, 70, 30, player.x,
-                             player.y, base_width, base_height)
+        rendering.render_all(win, entities, game_map, view_width, view_height,
+                             player.x, player.y, base_width, base_height)
         action = input_handler.handle_input(win)
         mv = action.get('move')
         if mv:
