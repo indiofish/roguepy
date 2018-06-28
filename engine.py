@@ -3,7 +3,8 @@ import tdl
 import input_handler
 import rendering
 import maps
-from colors import *
+from colors import color
+import colors
 from entity import Entity
 # import locale
 
@@ -20,19 +21,19 @@ def main(stdscr):
     win = curses.newpad(height, width)
 
     base_height, base_width = stdscr.getmaxyx()
-    init_colors()
-    stdscr.bkgd(' ', color(BLACK))
+    colors.init_colors()
+    stdscr.bkgd(' ')
     stdscr.clear()
     stdscr.refresh()
 
-    win.bkgd(' ', color(BLACK))
+    win.bkgd(' ')
     curses.curs_set(0)  # hide cursor
 
     map_height = 150
     map_width = 150
     game_map = maps.GameMap(map_width, map_height)
 
-    player = Entity(0, 0, '@', color(WHITE_BOLD))
+    player = Entity(0, 0, '@', color(colors.WHITE_BOLD))
 
     maps.generate_map(game_map, max_rooms, room_min_size, room_max_size,
                       map_width, map_height, player)

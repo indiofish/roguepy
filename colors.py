@@ -1,8 +1,5 @@
 import curses
 
-# :FIXME
-palette = [0 for _ in range(300)]
-
 # COLOR_BKGD = -1
 WHITE = 0
 BLACK = 1
@@ -28,8 +25,7 @@ def init_colors():
     curses.use_default_colors()
     for i in range(curses.COLORS):
         curses.init_pair(i+1, i, -1)
-        palette[i+1] = curses.color_pair(i+1)
 
 
 def color(i):
-    return palette[i]
+    return curses.color_pair(i)
