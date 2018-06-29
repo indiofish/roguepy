@@ -7,12 +7,11 @@ class GameMap(Map):
         super(GameMap, self).__init__(width, height)
         self.explored = [[False for y in range(height)] for x in range(width)]
 
-    def compute_fov(self, player_x, player_y, fov='DIAMOND',
-                    radius=0, light_walls=True):
+    def compute_fov(self, player, fov='DIAMOND', light_walls=True):
         """simple override for simpler function usage"""
-        return super(GameMap, self).compute_fov(player_x, player_y,
+        return super(GameMap, self).compute_fov(player.x, player.y,
                                                 fov=fov,
-                                                radius=radius,
+                                                radius=player.view_radius,
                                                 light_walls=light_walls)
 
 

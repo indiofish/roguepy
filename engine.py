@@ -51,7 +51,7 @@ def main(stdscr):
                       map_width, map_height, player)
 
     # initial compute of fov
-    game_map.compute_fov(player.x, player.y)
+    game_map.compute_fov(player)
     while True:
         rendering.render_all(win, entities, game_map, view_width, view_height,
                              player.x, player.y, base_width, base_height)
@@ -60,7 +60,7 @@ def main(stdscr):
         if mv:
             dx, dy = mv
             if game_map.walkable[player.x+dx, player.y+dy]:
-                game_map.compute_fov(player.x, player.y)
+                game_map.compute_fov(player)
                 player.move(dx, dy)
             # else:
                 # break
