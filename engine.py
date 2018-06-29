@@ -6,6 +6,7 @@ import maps
 from colors import color
 import colors
 from entity import Entity
+from player import Player
 import tileset
 # import locale
 
@@ -43,7 +44,7 @@ def main(stdscr):
     colors.init_colors()
     curses.curs_set(0)  # hide cursor
 
-    player = Entity(0, 0, tileset.PLAYER, color(colors.WHITE_BOLD))
+    player = Player()
     entities = [player]
     game_map = maps.GameMap(map_width, map_height)
     maps.generate_map(game_map, max_rooms, room_min_size, room_max_size,
