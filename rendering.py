@@ -7,7 +7,7 @@ def render_all(win, entities, game_map, width, height, player_x, player_y,
                base_w, base_h):
     draw_map(win, game_map)
     for e in entities:
-        draw_entity(win, e)
+        draw_entity(win, e, game_map.fov)
 
     # map_height, map_width = game_map.height, game_map.width
     start_x = min(max(0, player_x - width // 2), game_map.width - width)
@@ -29,8 +29,9 @@ def clear_all(win, entities):
         clear_entity(win, e)
 
 
-def draw_entity(win, entity):
-    win.addstr(entity.y, entity.x, entity.rep, entity.color)
+def draw_entity(win, entity, fov):
+    if fov[entity.x, entity.y]:
+        win.addstr(entity.y, entity.x, entity.rep, entity.color)
 
 
 def clear_entity(win, entity):
