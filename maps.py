@@ -1,5 +1,7 @@
 from tdl.map import Map
 from random import randint
+from mobs import Mob
+from debug import log
 
 
 class GameMap(Map):
@@ -7,11 +9,11 @@ class GameMap(Map):
         super(GameMap, self).__init__(width, height)
         self.explored = [[False for y in range(height)] for x in range(width)]
 
-    def compute_fov(self, player, fov='DIAMOND', light_walls=True):
+    def compute_fov(self, player, fov='PERMISSIVE', light_walls=True):
         """simple override for simpler function usage"""
         return super(GameMap, self).compute_fov(player.x, player.y,
                                                 fov=fov,
-                                                radius=player.view_radius,
+                                                radius=player.fov_radius,
                                                 light_walls=light_walls)
 
 
@@ -45,6 +47,67 @@ def create_room(game_map, room):
             game_map.transparent[x, y] = True
 
 
+def generate_map(game_map, max_rooms, room_min_size, room_max_size, player,
+                 entities):
+
+    rooms = generate_rooms(game_map, max_rooms, room_min_size, room_max_size)
+    for r in rooms:
+        create_room(game_map, r)
+    generate_tunnels(game_map, rooms)
+
+    mobs = generate_mobs(rooms, 1)
+
+    entities += mobs
+
+    # place the player in the first room made
+    player.x, player.y = rooms[0].center()
+
+
+def generate_mobs(rooms, max_mobs_per_room):
+    """fill in the rooms with mobs"""
+    # how do we ensure that no mobs are on the same position?
+    # we create a temporary dictionary of mobs with position as key
+    mobs = {}
+
+    # TODO: we will pick mobs from available mobs list
+    for room in rooms:
+        n_of_mobs = randint(0, max_mobs_per_room)
+        for i in range(n_of_mobs):
+            # +-1 since we cannot place mobs in walls
+            x = randint(room.x1 + 1, room.x2 - 1)
+            y = randint(room.y1 + 1, room.y2 - 1)
+
+            mobs[x, y] = Mob(x, y, 'd')
+
+    # extract mob(values) from mobs(dict)
+    return list(mobs.values())
+
+
+def generate_rooms(game_map, max_rooms, room_min_size, room_max_size):
+    rooms = []
+
+    for r in range(max_rooms):
+        w = randint(room_min_size, room_max_size)
+        h = randint(room_min_size, room_max_size)
+
+        x = randint(0, game_map.width - w - 1)
+        y = randint(0, game_map.height - h - 1)
+
+        new_room = Rect(x, y, w, h)
+
+        if not rooms:  # if this is a new room
+            # this ensures that the first room the player is in
+            # is first room in [rooms]
+            rooms.append(new_room)
+        else:  # if we have rooms
+            for other_rooms in rooms:
+                if new_room.intersect(other_rooms):
+                    break
+            rooms.append(new_room)
+
+    return rooms
+
+
 def create_h_tunnel(game_map, x1, x2, y, width=1):
     for x in range(min(x1, x2), max(x1, x2)+1):
         for w in range(width):
@@ -59,41 +122,18 @@ def create_v_tunnel(game_map, y1, y2, x, width=1):
             game_map.transparent[x+w, y] = True
 
 
-def generate_map(game_map, max_rooms, room_min_size, room_max_size, map_width,
-                 map_height, player):
-
-    rooms = []
-    rooms_count = 0
-
-    for r in range(max_rooms):
-        w = randint(room_min_size, room_max_size)
-        h = randint(room_min_size, room_max_size)
-
-        x = randint(0, map_width - w - 1)
-        y = randint(0, map_height - h - 1)
-
-        new_room = Rect(x, y, w, h)
-
-        # TODO: fix this code
-        if rooms_count == 0:  # if this is a new room
-            player.x, player.y = new_room.center()
-            create_room(game_map, new_room)
-            rooms.append(new_room)
-            rooms_count += 1
+def generate_tunnels(game_map, rooms):
+    """create tunnels that connect between two random rooms"""
+    # init: get the first room as prev, and start from index 1
+    prev_room = rooms[0]
+    for r in rooms[1:]:
+        new_x, new_y = r.center()
+        prev_x, prev_y = prev_room.center()
+        if randint(0, 1):
+            create_h_tunnel(game_map, prev_x, new_x, prev_y)
+            create_v_tunnel(game_map, prev_y, new_y, new_x)
         else:
-            for other_rooms in rooms:
-                if new_room.intersect(other_rooms):
-                    break
-                else:
-                    create_room(game_map, new_room)
-                    new_x, new_y = new_room.center()
-                    (prev_x, prev_y) = rooms[rooms_count-1].center()
-                    if randint(0, 1):
-                        create_h_tunnel(game_map, prev_x, new_x, prev_y)
-                        create_v_tunnel(game_map, prev_y, new_y, new_x)
-                    else:
-                        create_v_tunnel(game_map, prev_y, new_y, prev_x)
-                        create_h_tunnel(game_map, prev_x, new_x, new_y)
+            create_v_tunnel(game_map, prev_y, new_y, prev_x)
+            create_h_tunnel(game_map, prev_x, new_x, new_y)
 
-                    rooms.append(new_room)
-                    rooms_count += 1
+        prev_room = r
