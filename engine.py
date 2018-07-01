@@ -5,7 +5,7 @@ import rendering
 import maps
 from colors import color
 import colors
-from entity import Entity
+from entity import Entity, blocking_entity_at_position
 from player import Player
 import tileset
 from debug import log
@@ -14,11 +14,13 @@ from debug import log
 
 def main(stdscr):
     # locale.setlocale(locale.LC_ALL, '')
+    # debugging console
+    log.scr = stdscr
 
     # constants related to rooms
     room_max_size = 20
     room_min_size = 10
-    max_rooms = 15
+    max_rooms = 30
 
     # constants related to padding size
     # either height/width has to be larger than their counterparts of map
@@ -45,9 +47,6 @@ def main(stdscr):
     colors.init_colors()
     curses.curs_set(0)  # hide cursor
 
-    # debugging console
-    log.scr = stdscr
-    log(1)
     player = Player()
     entities = [player]
     game_map = maps.GameMap(map_width, map_height)
@@ -63,9 +62,16 @@ def main(stdscr):
         mv = action.get('move')
         if mv:
             dx, dy = mv
+            dest_x = player.x + dx
+            dest_y = player.y + dy
             if game_map.walkable[player.x+dx, player.y+dy]:
-                game_map.compute_fov(player)
-                player.move(dx, dy)
+                target = blocking_entity_at_position(entities, dest_x, dest_y)
+                log(str(target))
+                if target:
+                    log("attack!")
+                else:
+                    game_map.compute_fov(player)
+                    player.move(dx, dy)
             # else:
                 # break
 

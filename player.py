@@ -4,9 +4,9 @@ import tileset
 
 
 class Player(Entity):
-    def __init__(self):
+    def __init__(self, name='Player', blocks=True):
         super(Player, self).__init__(0, 0, tileset.PLAYER,
-                                     colors.color(colors.WHITE_BOLD))
+                                     colors.color(colors.WHITE_BOLD), name)
         self.fov_radius = 8
 
     @property
