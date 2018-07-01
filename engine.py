@@ -8,6 +8,7 @@ import colors
 from entity import Entity
 from player import Player
 import tileset
+from debug import log
 # import locale
 
 
@@ -15,8 +16,8 @@ def main(stdscr):
     # locale.setlocale(locale.LC_ALL, '')
 
     # constants related to rooms
-    room_max_size = 10
-    room_min_size = 5
+    room_max_size = 20
+    room_min_size = 10
     max_rooms = 15
 
     # constants related to padding size
@@ -30,7 +31,7 @@ def main(stdscr):
     # get size of the screen for positioning
     base_height, base_width = stdscr.getmaxyx()
     # constants related to view size
-    #TODO: change view size in relation to screen size
+    # TODO: change view size in relation to screen size
     view_width = 70
     view_height = 24
 
@@ -44,11 +45,14 @@ def main(stdscr):
     colors.init_colors()
     curses.curs_set(0)  # hide cursor
 
+    # debugging console
+    log.scr = stdscr
+    log(1)
     player = Player()
     entities = [player]
     game_map = maps.GameMap(map_width, map_height)
-    maps.generate_map(game_map, max_rooms, room_min_size, room_max_size,
-                      map_width, map_height, player)
+    maps.generate_map(game_map, max_rooms, room_min_size,
+                      room_max_size, player, entities)
 
     # initial compute of fov
     game_map.compute_fov(player)
