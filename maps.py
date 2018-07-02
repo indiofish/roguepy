@@ -17,7 +17,7 @@ class GameMap(Map):
                                                 light_walls=light_walls)
 
 
-class Rect:
+class Rect():
     def __init__(self, x, y, w, h):
 
         # x1, y1 : left corner
@@ -55,7 +55,7 @@ def generate_map(game_map, max_rooms, room_min_size, room_max_size, player,
         create_room(game_map, r)
     generate_tunnels(game_map, rooms)
 
-    mobs = generate_mobs(rooms, 1)
+    mobs = generate_mobs(rooms[1:], 3)
 
     entities += mobs
 
@@ -100,10 +100,9 @@ def generate_rooms(game_map, max_rooms, room_min_size, room_max_size):
             # is first room in [rooms]
             rooms.append(new_room)
         else:  # if we have rooms
-            for other_rooms in rooms:
-                if new_room.intersect(other_rooms):
-                    break
-            rooms.append(new_room)
+            # if other rooms do not intersect with new ones
+            if sum(1 for r in rooms if new_room.intersect(r)) == 0:
+                rooms.append(new_room)
 
     return rooms
 
