@@ -10,6 +10,7 @@ from player import Player
 import tileset
 from debug import log
 from game_states import GameStates
+from components.combat import Combat
 # import locale
 
 
@@ -48,7 +49,8 @@ def main(stdscr):
     colors.init_colors()
     curses.curs_set(0)  # hide cursor
 
-    player = Player()
+    combat_module = Combat(hp=30, defense=2, power=5)
+    player = Player(combat_module)
     entities = [player]
     game_map = maps.GameMap(map_width, map_height)
     maps.generate_map(game_map, max_rooms, room_min_size,
@@ -77,8 +79,8 @@ def main(stdscr):
             game_state = GameStates.ENEMY_TURN
         if game_state == GameStates.ENEMY_TURN:
             for e in entities:
-                if e != player:
-                    1
+                if e.ai:  # if it has an ai module
+                    e.ai.take_turn()
                     # do something
             game_state = GameStates.PLAYERS_TURN
 

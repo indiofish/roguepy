@@ -2,6 +2,8 @@ from tdl.map import Map
 from random import randint
 from mobs import Mob
 from debug import log
+from components.combat import Combat
+from components.ai import BasicMonster
 
 
 class GameMap(Map):
@@ -77,7 +79,9 @@ def generate_mobs(rooms, max_mobs_per_room):
             x = randint(room.x1 + 1, room.x2 - 1)
             y = randint(room.y1 + 1, room.y2 - 1)
 
-            mobs[x, y] = Mob(x, y, 'd')
+            combat_module = Combat(10, 0, 5)
+            ai_module = BasicMonster()
+            mobs[x, y] = Mob(x, y, 'd', combat_module, ai_module)
 
     # extract mob(values) from mobs(dict)
     return list(mobs.values())

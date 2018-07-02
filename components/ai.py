@@ -1,4 +1,8 @@
+from debug import log
+
+
 class BasicMonster():
     """Basic AI for mobs"""
     def take_turn(self):
-        print(self.name)
+        1
+        # log(self.owner.name)

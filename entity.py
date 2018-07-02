@@ -11,8 +11,8 @@ class Entity():
         self.combat = combat
         self.ai = ai
 
-        if self.fighter:
-            self.fighter.owner = self
+        if self.combat:
+            self.combat.owner = self
         if self.ai:
             self.ai.owner = self
 
