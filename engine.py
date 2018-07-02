@@ -9,6 +9,7 @@ from entity import Entity, blocking_entity_at_position
 from player import Player
 import tileset
 from debug import log
+from game_states import GameStates
 # import locale
 
 
@@ -53,6 +54,7 @@ def main(stdscr):
     maps.generate_map(game_map, max_rooms, room_min_size,
                       room_max_size, player, entities)
 
+    game_state = GameStates.PLAYERS_TURN
     # initial compute of fov
     game_map.compute_fov(player)
     while True:
@@ -60,20 +62,25 @@ def main(stdscr):
                              player.x, player.y, base_width, base_height)
         action = input_handler.handle_input(win)
         mv = action.get('move')
-        if mv:
+        if mv and game_state == GameStates.PLAYERS_TURN:
             dx, dy = mv
             dest_x = player.x + dx
             dest_y = player.y + dy
             if game_map.walkable[player.x+dx, player.y+dy]:
                 target = blocking_entity_at_position(entities, dest_x, dest_y)
-                log(str(target))
                 if target:
                     log("attack!")
                 else:
                     game_map.compute_fov(player)
                     player.move(dx, dy)
-            # else:
-                # break
+
+            game_state = GameStates.ENEMY_TURN
+        if game_state == GameStates.ENEMY_TURN:
+            for e in entities:
+                if e != player:
+                    1
+                    # do something
+            game_state = GameStates.PLAYERS_TURN
 
 
 curses.wrapper(main)
