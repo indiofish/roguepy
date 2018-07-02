@@ -4,9 +4,10 @@ import tileset
 
 
 class Mob(Entity):
-    def __init__(self, x, y, char, blocks=True):
+    def __init__(self, x, y, char, combat, ai, blocks=True):
         super(Mob, self).__init__(x, y, 'd',
-                                  colors.color(colors.GREEN), 'mob', blocks=blocks)
+                                  colors.color(colors.GREEN),
+                                  'mob', blocks=blocks, combat=combat, ai=ai)
         # eyesight
         self.fov_radius = 8
         # hitpoints

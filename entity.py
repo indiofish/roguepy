@@ -1,12 +1,20 @@
 class Entity():
     """Top level generic object for allmost anything"""
-    def __init__(self, x, y, rep, color, name, blocks=False):
+    def __init__(self, x, y, rep, color,
+                 name, blocks=False, combat=None, ai=None):
         self.x = x
         self.y = y
         self.rep = rep  # character that represents this
         self.name = name
         self.color = color
         self.blocks = blocks
+        self.combat = combat
+        self.ai = ai
+
+        if self.fighter:
+            self.fighter.owner = self
+        if self.ai:
+            self.ai.owner = self
 
     def move(self, dx, dy):
         self.x += dx
