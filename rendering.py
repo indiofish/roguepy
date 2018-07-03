@@ -22,20 +22,26 @@ def render_all(win, entities, game_map, width, height, player_x, player_y,
     # pos_x = (base_w - width) // 2
     # pos_y = (base_h - height) // 2
 
-    pos = main_screen_position(game_map, width, height, player_x, player_y,
-                               base_w, base_h)
-    start_x, start_y, pos_x, pos_y = pos
+    start_x, start_y = view_position(game_map.width, game_map.height,
+                                     width, height, player_x, player_y)
+    pos_x, pos_y = main_window_position(width, height, base_w, base_h)
     win.refresh(start_y, start_x, pos_y, pos_x, height+pos_y, width+pos_x)
 
 
-def main_screen_position(game_map, width, height, player_x, player_y, base_w,
-                         base_h):
-    start_x = min(max(0, player_x - width // 2), game_map.width - width)
-    start_y = min(max(0, player_y - height // 2), game_map.height - height)
+def view_position(game_map_w, game_map_h, width, height, player_x, player_y):
+    """The top left corner of the area player can view, with @ at the center"""
+    start_x = min(max(0, player_x - width // 2), game_map_w - width)
+    start_y = min(max(0, player_y - height // 2), game_map_h - height)
+
+    return (start_x, start_y)
+
+
+def main_window_position(width, height, base_w, base_h):
+    """The position window will be displayed, relative to the stdscr"""
     pos_x = (base_w - width) // 2
     pos_y = (base_h - height) // 2
 
-    return (start_x, start_y, pos_x, pos_y)
+    return (pos_x, pos_y)
 
 
 def clear_all(win, entities):
