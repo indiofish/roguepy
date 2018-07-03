@@ -10,8 +10,8 @@ def render_all(win, entities, game_map, width, height, player_x, player_y,
         draw_entity(win, e, game_map.fov)
 
     # map_height, map_width = game_map.height, game_map.width
-    start_x = min(max(0, player_x - width // 2), game_map.width - width)
-    start_y = min(max(0, player_y - height // 2), game_map.height - height)
+    # start_x = min(max(0, player_x - width // 2), game_map.width - width)
+    # start_y = min(max(0, player_y - height // 2), game_map.height - height)
     # stdscr.addstr(20, 100, "x:" + str(player_x), colors.COLOR_WHITE_BOLD)
     # stdscr.addstr(21, 100, "y:"+str(player_y), colors.COLOR_WHITE_BOLD)
     # stdscr.addstr(22, 100, "w:" + str(start_x), colors.COLOR_WHITE_BOLD)
@@ -19,9 +19,23 @@ def render_all(win, entities, game_map, width, height, player_x, player_y,
     # stdscr.refresh()
 
     # calculate the start of the position it is displayed
+    # pos_x = (base_w - width) // 2
+    # pos_y = (base_h - height) // 2
+
+    pos = main_screen_position(game_map, width, height, player_x, player_y,
+                               base_w, base_h)
+    start_x, start_y, pos_x, pos_y = pos
+    win.refresh(start_y, start_x, pos_y, pos_x, height+pos_y, width+pos_x)
+
+
+def main_screen_position(game_map, width, height, player_x, player_y, base_w,
+                         base_h):
+    start_x = min(max(0, player_x - width // 2), game_map.width - width)
+    start_y = min(max(0, player_y - height // 2), game_map.height - height)
     pos_x = (base_w - width) // 2
     pos_y = (base_h - height) // 2
-    win.refresh(start_y, start_x, pos_y, pos_x, height+pos_y, width+pos_x)
+
+    return (start_x, start_y, pos_x, pos_y)
 
 
 def clear_all(win, entities):
