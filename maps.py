@@ -1,7 +1,6 @@
 from tdl.map import Map
 from random import randint
 from mobs import Mob
-from debug import log
 from components.combat import Combat
 from components.ai import BasicMonster
 
