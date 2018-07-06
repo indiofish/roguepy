@@ -1,3 +1,6 @@
+import math
+
+
 class Entity():
     """Top level generic object for allmost anything"""
     def __init__(self, x, y, rep, color,

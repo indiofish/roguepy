@@ -1,20 +1,21 @@
-from debug import log
 import math
 
 
 class BasicMonster():
     """Basic AI for mobs"""
     def take_turn(self, target, game_map, entities):
+        results = []
         mob = self.owner
 
         # as of now, i see you you see me
         if game_map.fov[mob.x, mob.y]:
             if mob.distance_to(target) >= 2:
                 mob.move_towards(target.x, target.y, game_map, entities)
-                return "MOVE!"
             elif target.combat.hp > 0:
-                return "ATTACK!"
-        # log(self.owner.name)
+                attack_results = mob.combat.attack(target)
+                results.extend(attack_results)
+
+        return results
 
     def move_towards(self, target_x, target_y, game_map, entities):
         path = game_map.compute_path(self.x, self.y, target_x, target_y)
