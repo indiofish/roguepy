@@ -20,6 +20,22 @@ class Entity():
         self.x += dx
         self.y += dy
 
+    def move_towards(self, target_x, target_y, game_map, entities):
+        path = game_map.compute_path(self.x, self.y, target_x, target_y)
+
+        dx = path[0][0] - self.x
+        dy = path[0][1] - self.y
+
+        if (game_map.walkable[path[0][0], path[0][1]] and
+            not blocking_entity_at_position(entities, path[0][0], path[0][1])):
+            self.move(dx, dy)
+
+    def distance_to(self, other):
+        dx = self.x - other.x
+        dy = self.y - other.y
+
+        return math.sqrt(dx**2 + dy**2)
+
 
 def blocking_entity_at_position(entities, pos_x, pos_y):
 
