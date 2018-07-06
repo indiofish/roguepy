@@ -26,7 +26,7 @@ class Combat():
             txt = {'msg': "{0}, attacks {1} for {2} damage.".format(
                 self.owner.name, target.name, str(dmg))}
             results.append(txt)
-            results.extend(target.figther.take_damage)
+            results.extend(target.combat.take_damage)
         else:
             txt = {'msg': "no dmg!"}
             results.append(txt)
