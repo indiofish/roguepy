@@ -85,7 +85,6 @@ def main(stdscr):
                 else:
                     game_map.compute_fov(player)
                     player.move(dx, dy)
-                    msgbox.print("move")
 
             game_state = GameStates.ENEMY_TURN
 

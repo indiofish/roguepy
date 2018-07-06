@@ -22,11 +22,10 @@ class Combat():
         dmg = self.power - target.combat.defense
 
         if dmg > 0:
-            target.combat.take_damage(dmg)
             txt = {'msg': "{0}, attacks {1} for {2} damage.".format(
                 self.owner.name, target.name, str(dmg))}
             results.append(txt)
-            results.extend(target.combat.take_damage)
+            results.extend(target.combat.take_damage(dmg))
         else:
             txt = {'msg': "no dmg!"}
             results.append(txt)
