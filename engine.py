@@ -11,8 +11,6 @@ import tileset
 from game_states import GameStates
 from components.combat import Combat
 from msgbox import MsgBox
-from death_functions import kill_player, kill_mob
-# import locale
 
 
 def main(stdscr):
@@ -78,41 +76,50 @@ def main(stdscr):
             dx, dy = mv
             dest_x = player.x + dx
             dest_y = player.y + dy
+
             if game_map.walkable[player.x+dx, player.y+dy]:
                 target = blocking_entity_at_position(entities, dest_x, dest_y)
+
                 if target:
-                    ret = player.combat.attack(target)
-                    player_turn_results.extend(ret)
+                    atk_results = player.combat.attack(target)
+                    player_turn_results.extend(atk_results)
                 else:
-                    game_map.compute_fov(player)
                     player.move(dx, dy)
+                    game_map.compute_fov(player)
 
             game_state = GameStates.ENEMY_TURN
 
-            for result in player_turn_results:
-                msg = result.get('msg')
-                dead_entity = result.get('dead')
-                if msg:
-                    msgbox.print(msg)
-                if dead_entity == player:
-                    game_state = GameStates.PlAYER_DEAD
-
+        for result in player_turn_results:
+            msg = result.get('msg')
+            dead_entity = result.get('dead')
+            if msg:
+                msgbox.print(msg)
+            if dead_entity == player:
+                game_state = GameStates.PLAYER_DEAD
 
         if game_state == GameStates.ENEMY_TURN:
-            for e in entities:
-                if e.ai:  # if it has an ai module
-                    ret = e.ai.take_turn(player, game_map, entities)
-
-                    for result in ret:
-                        msg = result.get('msg')
-                        dead_entity = result.get('dead')
-
-                        if dead_entity == player:
-                            game_state = GameStates.PLAYER_DEAD
-                        if msg:
-                            msgbox.print(msg)
-            else:
-                game_state = GameStates.PLAYERS_TURN
+            # move those with ai modules
+            enemies = (e for e in entities if e.ai)
+            for e in enemies:
+                ret = e.ai.take_turn(player, game_map, entities)
 
 
-curses.wrapper(main)
+                # still a bit WET!
+                for result in ret:
+                    msg = result.get('msg')
+                    dead_entity = result.get('dead')
+                    if msg:
+                        msgbox.print(msg)
+                    if dead_entity == player:
+                        game_state = GameStates.PLAYER_DEAD
+
+
+        # check whether to return to beginning of loop
+        if game_state == GameStates.PLAYER_DEAD:
+            break
+        else:
+            game_state = GameStates.PLAYERS_TURN
+
+
+if __name__ == '__main__':
+    curses.wrapper(main)
