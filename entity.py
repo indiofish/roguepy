@@ -39,6 +39,9 @@ class Entity():
 
         return math.sqrt(dx**2 + dy**2)
 
+    def dead(self):
+        pass
+
 
 def blocking_entity_at_position(entities, pos_x, pos_y):
 

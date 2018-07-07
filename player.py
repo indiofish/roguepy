@@ -1,6 +1,7 @@
 from entity import Entity
 import colors
 import tileset
+from game_states import GameStates
 
 
 class Player(Entity):
@@ -17,3 +18,8 @@ class Player(Entity):
     @fov_radius.setter
     def fov_radius(self, val):
         self.__fov_radius = val
+
+    def dead(self):
+        self.rep = tileset.GRAVE
+
+        return 'YOU ARE DEAD!!'

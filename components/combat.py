@@ -12,6 +12,8 @@ class Combat():
 
         if self.hp <= 0:
             results.append({'dead': self.owner})
+            ret = self.owner.dead()
+            results.append({'msg': ret})
 
         return results
 

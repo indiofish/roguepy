@@ -11,6 +11,7 @@ import tileset
 from game_states import GameStates
 from components.combat import Combat
 from msgbox import MsgBox
+from death_functions import kill_player, kill_mob
 # import locale
 
 
@@ -93,9 +94,9 @@ def main(stdscr):
                 dead_entity = result.get('dead')
                 if msg:
                     msgbox.print(msg)
-                if dead_entity:
-                    # do sth
-                    pass
+                if dead_entity == player:
+                    game_state = GameStates.PlAYER_DEAD
+
 
         if game_state == GameStates.ENEMY_TURN:
             for e in entities:
@@ -106,10 +107,10 @@ def main(stdscr):
                         msg = result.get('msg')
                         dead_entity = result.get('dead')
 
+                        if dead_entity == player:
+                            game_state = GameStates.PLAYER_DEAD
                         if msg:
                             msgbox.print(msg)
-                        if dead_entity:
-                            pass # do something
             else:
                 game_state = GameStates.PLAYERS_TURN
 
