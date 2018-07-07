@@ -19,6 +19,7 @@ CYAN_BOLD = 15
 WHITE_BOLD = 16
 DARK_GRAY = 237
 LIGHT_GRAY = 241
+DARK_RED = 89
 
 
 def init_colors():
