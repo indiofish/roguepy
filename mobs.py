@@ -1,13 +1,15 @@
 from entity import Entity
 import colors
 import tileset
+from rendering import RenderOrder
 
 
 class Mob(Entity):
     def __init__(self, x, y, char, combat, ai, blocks=True):
         super(Mob, self).__init__(x, y, u'\u04e7',
                                   colors.color(colors.GREEN),
-                                  'mob', blocks=blocks, combat=combat, ai=ai)
+                                  'mob', blocks=blocks, combat=combat, ai=ai,
+                                  render_order=RenderOrder.ACTOR)
         # eyesight
         self.fov_radius = 8
         # hitpoints
@@ -24,6 +26,7 @@ class Mob(Entity):
         self.__fov_radius = val
 
     def dead(self):
+        super().dead()
         death_msg = '{0} is dead!'.format(self.name)
 
         self.rep = tileset.CORPSE

@@ -1,10 +1,11 @@
 import math
+from rendering import RenderOrder
 
 
 class Entity():
     """Top level generic object for allmost anything"""
-    def __init__(self, x, y, rep, color,
-                 name, blocks=False, combat=None, ai=None):
+    def __init__(self, x, y, rep, color, name,
+                 render_order=RenderOrder.CORPSE, blocks=False, combat=None, ai=None):
         self.x = x
         self.y = y
         self.rep = rep  # character that represents this
@@ -13,6 +14,7 @@ class Entity():
         self.blocks = blocks
         self.combat = combat
         self.ai = ai
+        self.render_order = render_order
 
         if self.combat:
             self.combat.owner = self
@@ -40,7 +42,7 @@ class Entity():
         return math.sqrt(dx**2 + dy**2)
 
     def dead(self):
-        pass
+        self.render_order = RenderOrder.CORPSE
 
 
 def blocking_entity_at_position(entities, pos_x, pos_y):

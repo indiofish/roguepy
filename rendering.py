@@ -1,26 +1,25 @@
 from colors import color
 import colors
 import tileset
+from enum import Enum
+
+class RenderOrder(Enum):
+    CORPSE = 1
+    ITEM = 2
+    ACTOR = 3
+
 
 
 def render_all(win, entities, game_map, width, height, player_x, player_y,
                base_w, base_h):
+
     draw_map(win, game_map)
-    for e in entities:
+
+    entities_in_render_order = sorted(entities, 
+                                      key=lambda x: x.render_order.value)
+    for e in entities_in_render_order:
         draw_entity(win, e, game_map.fov)
 
-    # map_height, map_width = game_map.height, game_map.width
-    # start_x = min(max(0, player_x - width // 2), game_map.width - width)
-    # start_y = min(max(0, player_y - height // 2), game_map.height - height)
-    # stdscr.addstr(20, 100, "x:" + str(player_x), colors.COLOR_WHITE_BOLD)
-    # stdscr.addstr(21, 100, "y:"+str(player_y), colors.COLOR_WHITE_BOLD)
-    # stdscr.addstr(22, 100, "w:" + str(start_x), colors.COLOR_WHITE_BOLD)
-    # stdscr.addstr(23, 100, "h:"+str(start_y), colors.COLOR_WHITE_BOLD)
-    # stdscr.refresh()
-
-    # calculate the start of the position it is displayed
-    # pos_x = (base_w - width) // 2
-    # pos_y = (base_h - height) // 2
 
     start_x, start_y = view_position(game_map.width, game_map.height,
                                      width, height, player_x, player_y)
