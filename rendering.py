@@ -1,8 +1,8 @@
 from colors import color
-import colors
 import tileset
 from enum import Enum
 from curses import doupdate
+import curses
 
 class RenderOrder(Enum):
     CORPSE = 1
@@ -20,6 +20,7 @@ def render_all(win, entities, game_map, width, height, player,
                                       key=lambda x: x.render_order.value)
     for e in entities_in_render_order:
         draw_entity(win, e, game_map.fov)
+
 
     player_x, player_y = player.x, player.y
 
@@ -52,9 +53,9 @@ def render_bar(panel, value, maximum, name):
     _, total_width = panel.getmaxyx()
     panel.erase()
 
-    panel.addstr(0, 0, name, colors.color(colors.RED))
-    panel.addstr(0, len(name), '[', colors.color(colors.RED))
-    panel.addstr(0, total_width-2, ']', colors.color(colors.RED))
+    panel.addstr(0, 0, name, color('RED'))
+    panel.addstr(0, len(name), '[', color('RED'))
+    panel.addstr(0, total_width-2, ']', color('RED'))
 
     total_width -= (3 + len(name))
 
@@ -62,7 +63,7 @@ def render_bar(panel, value, maximum, name):
 
     if bar_width > 0:
         panel.addstr(0, len(name)+1, '#' * bar_width,
-                     colors.color(colors.RED))
+                     color('RED'))
 
     panel.noutrefresh()
 
@@ -79,7 +80,7 @@ def draw_entity(win, entity, fov):
 
 
 def clear_entity(win, entity):
-    win.addch(entity.y, entity.x, ' ', color(colors.BLACK))
+    win.addch(entity.y, entity.x, ' ', color('BLACK'))
 
 
 def draw_map(win, game_map):
@@ -89,11 +90,11 @@ def draw_map(win, game_map):
             # if in fov then explored
             game_map.explored[x][y] = True
             if wall:
-                win.addch(y, x, tileset.WALL, color(colors.LIGHT_GRAY))
+                win.addch(y, x, tileset.WALL, color('LIGHT_GRAY'))
             else:
-                win.addch(y, x, tileset.FLOOR, color(colors.LIGHT_GRAY))
+                win.addch(y, x, tileset.FLOOR, color('LIGHT_GRAY'))
         elif game_map.explored[x][y]:
             if wall:
-                win.addch(y, x, tileset.WALL, color(colors.DARK_GRAY))
+                win.addch(y, x, tileset.WALL, color('DARK_GRAY'))
             else:
-                win.addch(y, x, tileset.FLOOR, color(colors.DARK_GRAY))
+                win.addch(y, x, tileset.FLOOR, color('DARK_GRAY'))
