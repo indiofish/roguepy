@@ -4,8 +4,7 @@ import input_handler
 import rendering
 from rendering import RenderOrder
 import maps
-from colors import color
-import colors
+from colors import color, init_colors
 from entity import Entity, blocking_entity_at_position
 from player import Player
 import tileset
@@ -41,7 +40,7 @@ def main(stdscr):
 
 
     # default setups
-    colors.init_colors()
+    init_colors()
     curses.curs_set(0)  # hide cursor
     # win has to be a pad, so that scrolling is easily supported
     win = curses.newpad(height, width)
@@ -49,7 +48,6 @@ def main(stdscr):
     # msgwin
     msg_win = curses.newpad(10, 80)
     msgbox = MsgBox(msg_win, view_width, view_height, base_width, base_height)
-    msgbox.refresh()
 
     # bars
     bar_width = 33

@@ -1,5 +1,5 @@
 from entity import Entity
-import colors
+from colors import color
 import tileset
 from rendering import RenderOrder
 
@@ -7,7 +7,7 @@ from rendering import RenderOrder
 class Mob(Entity):
     def __init__(self, x, y, char, combat, ai, blocks=True):
         super(Mob, self).__init__(x, y, u'\u04e7',
-                                  colors.color(colors.GREEN),
+                                  color('GREEN'),
                                   'mob', blocks=blocks, combat=combat, ai=ai,
                                   render_order=RenderOrder.ACTOR)
         # eyesight
@@ -30,7 +30,7 @@ class Mob(Entity):
         death_msg = '{0} is dead!'.format(self.name)
 
         self.rep = tileset.CORPSE
-        self.color = colors.color(colors.DARK_RED)
+        self.color = color('DARK_RED')
         self.blocks = False
         self.combat = None
         self.ai = None

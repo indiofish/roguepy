@@ -1,5 +1,5 @@
 from entity import Entity
-import colors
+from colors import color
 import tileset
 from game_states import GameStates
 from rendering import RenderOrder
@@ -8,7 +8,7 @@ from rendering import RenderOrder
 class Player(Entity):
     def __init__(self, combat, name='Player', blocks=True):
         super(Player, self).__init__(0, 0, tileset.PLAYER,
-                                     colors.color(colors.WHITE_BOLD), name,
+                                     color('WHITE_BOLD'), name,
                                      combat=combat,
                                      render_order=RenderOrder.ACTOR)
         self.fov_radius = 8
