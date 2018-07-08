@@ -10,8 +10,8 @@ class RenderOrder(Enum):
 
 
 
-def render_all(win, entities, game_map, width, height, player_x, player_y,
-               base_w, base_h):
+def render_all(win, entities, game_map, width, height, player,
+               base_w, base_h, panel):
 
     draw_map(win, game_map)
 
@@ -20,10 +20,12 @@ def render_all(win, entities, game_map, width, height, player_x, player_y,
     for e in entities_in_render_order:
         draw_entity(win, e, game_map.fov)
 
+    player_x, player_y = player.x, player.y
 
     start_x, start_y = view_position(game_map.width, game_map.height,
                                      width, height, player_x, player_y)
     pos_x, pos_y = main_window_position(width, height, base_w, base_h)
+    render_bar(panel, player.combat.hp, player.combat.max_hp, 'HP')
     win.refresh(start_y, start_x, pos_y, pos_x, height+pos_y, width+pos_x)
 
 
@@ -41,6 +43,25 @@ def main_window_position(width, height, base_w, base_h):
     pos_y = (base_h - height) // 2
 
     return (pos_x, pos_y)
+
+def render_bar(panel, value, maximum, name):
+    _, total_width = panel.getmaxyx()
+    panel.erase()
+
+    panel.addstr(0, 0, name, colors.color(colors.RED))
+    panel.addstr(0, len(name), '[', colors.color(colors.RED))
+    panel.addstr(0, total_width-2, ']', colors.color(colors.RED))
+
+    total_width -= (3 + len(name))
+
+    bar_width = int(float(value) / maximum * total_width)
+
+    if bar_width > 0:
+        panel.addstr(0, len(name)+1, '#' * bar_width,
+                     colors.color(colors.RED))
+
+    panel.refresh()
+
 
 
 def clear_all(win, entities):

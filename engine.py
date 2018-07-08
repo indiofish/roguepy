@@ -2,6 +2,7 @@ import curses
 # import tdl
 import input_handler
 import rendering
+from rendering import RenderOrder
 import maps
 from colors import color
 import colors
@@ -31,28 +32,31 @@ def main(stdscr):
     map_width = 150
     # get size of the screen for positioning
     # FIXME: as of now, we are going to assume that stdscr size doesn't change
+    # stdscr is automatically init by wrapper()
     base_height, base_width = stdscr.getmaxyx()
     # constants related to view size
     # TODO: change view size in relation to screen size
     view_width = 80
     view_height = 24
 
-    # stdscr is automatically init by wrapper()
-    stdscr.bkgd(' ')
 
+    # default setups
+    colors.init_colors()
+    curses.curs_set(0)  # hide cursor
     # win has to be a pad, so that scrolling is easily supported
     win = curses.newpad(height, width)
-    msg_win = curses.newpad(10, 80)
-    # msg_board = curses.newpad(20, 80)
-    msgbox = MsgBox(msg_win, view_width, view_height, base_width, base_height)
     win.bkgd(' ')
-    # msg_board.bkgd(' ')
-    colors.init_colors()
-    # log.scr = msg_board
-    # log("HI")
+    # msgwin
+    msg_win = curses.newpad(10, 80)
+    msgbox = MsgBox(msg_win, view_width, view_height, base_width, base_height)
     msgbox.refresh()
 
-    curses.curs_set(0)  # hide cursor
+    # bars
+    bar_width = 33
+    bar_height = 1
+    bar_win = curses.newwin(bar_height, bar_width, 1, 1)
+    # bar_win.border()
+
 
     combat_module = Combat(hp=30, defense=2, power=5)
     player = Player(combat_module)
@@ -66,7 +70,7 @@ def main(stdscr):
     game_map.compute_fov(player)
     while True:
         rendering.render_all(win, entities, game_map, view_width, view_height,
-                             player.x, player.y, base_width, base_height)
+                             player, base_width, base_height, bar_win)
         action = input_handler.handle_input(win)
         mv = action.get('move')
 
@@ -101,11 +105,11 @@ def main(stdscr):
             # move those with ai modules
             enemies = (e for e in entities if e.ai)
             for e in enemies:
-                ret = e.ai.take_turn(player, game_map, entities)
+                e_turn_results = e.ai.take_turn(player, game_map, entities)
 
 
                 # still a bit WET!
-                for result in ret:
+                for result in e_turn_results:
                     msg = result.get('msg')
                     dead_entity = result.get('dead')
                     if msg:

@@ -20,12 +20,15 @@ WHITE_BOLD = 16
 DARK_GRAY = 237
 LIGHT_GRAY = 241
 DARK_RED = 89
+RED_BKGD = 90
 
 
 def init_colors():
     curses.use_default_colors()
     for i in range(curses.COLORS):
         curses.init_pair(i+1, i, -1)
+
+    curses.init_pair(90, 2, 1)
 
 
 def color(i):
