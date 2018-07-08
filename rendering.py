@@ -64,7 +64,7 @@ def render_bar(panel, value, maximum, name):
         panel.addstr(0, len(name)+1, '#' * bar_width,
                      colors.color(colors.RED))
 
-    panel.refresh()
+    panel.noutrefresh()
 
 
 

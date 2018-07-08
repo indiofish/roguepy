@@ -25,7 +25,7 @@ class MsgBox():
         y = self.main_h + pos_y
         win_h, win_w = self.win.getmaxyx()
 
-        self.win.refresh(0, 0, y+1, pos_x,
+        self.win.noutrefresh(0, 0, y+1, pos_x,
                          y+1+win_h, pos_x+win_w)
 
     def add(self, asset, color=0):
