@@ -28,16 +28,15 @@ class MsgBox():
         self.win.refresh(0, 0, y+1, pos_x,
                          y+1+win_h, pos_x+win_w)
 
-    def print(self, asset, color=0):
+    def add(self, asset, color=0):
         self.lines[self.position] = str(asset)
         self.position = (self.position + 1) % self.max_history
 
-        # i = 1 , not i=0 to account for border
+    def print(self):
         i = 1
         for j in range(self.position-8, self.position):
             line = self.lines[j]
             if line:
-                self.win.addstr(i, 1, line+' '*(self.max_width-len(line)),
-                                color)
+                self.win.addstr(i, 1, line+' '*(self.max_width-len(line)))
                 i += 1
         self.refresh()

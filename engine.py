@@ -70,7 +70,7 @@ def main(stdscr):
     game_map.compute_fov(player)
     while True:
         rendering.render_all(win, entities, game_map, view_width, view_height,
-                             player, base_width, base_height, bar_win)
+                             player, base_width, base_height, msgbox, bar_win)
         action = input_handler.handle_input(win)
         mv = action.get('move')
 
@@ -97,7 +97,7 @@ def main(stdscr):
             msg = result.get('msg')
             dead_entity = result.get('dead')
             if msg:
-                msgbox.print(msg)
+                msgbox.add(msg)
             if dead_entity == player:
                 game_state = GameStates.PLAYER_DEAD
 
@@ -113,7 +113,7 @@ def main(stdscr):
                     msg = result.get('msg')
                     dead_entity = result.get('dead')
                     if msg:
-                        msgbox.print(msg)
+                        msgbox.add(msg)
                     if dead_entity == player:
                         game_state = GameStates.PLAYER_DEAD
 

@@ -2,6 +2,7 @@ from colors import color
 import colors
 import tileset
 from enum import Enum
+from curses import doupdate
 
 class RenderOrder(Enum):
     CORPSE = 1
@@ -11,7 +12,7 @@ class RenderOrder(Enum):
 
 
 def render_all(win, entities, game_map, width, height, player,
-               base_w, base_h, panel):
+               base_w, base_h, msgbox, panel):
 
     draw_map(win, game_map)
 
@@ -26,7 +27,9 @@ def render_all(win, entities, game_map, width, height, player,
                                      width, height, player_x, player_y)
     pos_x, pos_y = main_window_position(width, height, base_w, base_h)
     render_bar(panel, player.combat.hp, player.combat.max_hp, 'HP')
-    win.refresh(start_y, start_x, pos_y, pos_x, height+pos_y, width+pos_x)
+    win.noutrefresh(start_y, start_x, pos_y, pos_x, height+pos_y, width+pos_x)
+    msgbox.print()
+    doupdate()
 
 
 def view_position(game_map_w, game_map_h, width, height, player_x, player_y):
@@ -45,6 +48,7 @@ def main_window_position(width, height, base_w, base_h):
     return (pos_x, pos_y)
 
 def render_bar(panel, value, maximum, name):
+    #TODO: remove magic numbers & clean up
     _, total_width = panel.getmaxyx()
     panel.erase()
 
