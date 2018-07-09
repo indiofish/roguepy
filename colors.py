@@ -21,6 +21,7 @@ color_names = {
     'DARK_GRAY' : 237,
     'LIGHT_GRAY' : 241,
     'DARK_RED' : 89,
+    'BROWN': 95,
 }
 
 palette = {}
