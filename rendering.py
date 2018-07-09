@@ -93,8 +93,17 @@ def draw_map(win, game_map):
                 win.addch(y, x, tileset.WALL, color('LIGHT_GRAY'))
             else:
                 win.addch(y, x, tileset.FLOOR, color('LIGHT_GRAY'))
+            if game_map.doors.get((x, y)) == 'h':
+                win.addch(y, x, tileset.H_DOOR, color('BROWN'))
+            elif game_map.doors.get((x, y)) == 'v':
+                win.addch(y, x, tileset.V_DOOR, color('BROWN'))
+
         elif game_map.explored[x][y]:
             if wall:
                 win.addch(y, x, tileset.WALL, color('DARK_GRAY'))
             else:
                 win.addch(y, x, tileset.FLOOR, color('DARK_GRAY'))
+            if game_map.doors.get((x, y)) == 'h':
+                win.addch(y, x, tileset.H_DOOR, color('BROWN'))
+            elif game_map.doors.get((x, y)) == 'v':
+                win.addch(y, x, tileset.V_DOOR, color('BROWN'))

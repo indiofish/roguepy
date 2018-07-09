@@ -9,6 +9,8 @@ class GameMap(Map):
     def __init__(self, width, height):
         super(GameMap, self).__init__(width, height)
         self.explored = [[False for y in range(height)] for x in range(width)]
+        # (1, 1, 'h'): a horizontal door, 1,1 as its position
+        self.doors = {}
 
     def compute_fov(self, player, fov='BASIC', light_walls=True):
         """simple override for simpler function usage"""
@@ -55,6 +57,7 @@ def generate_map(game_map, max_rooms, room_min_size, room_max_size, player,
     for r in rooms:
         create_room(game_map, r)
     generate_tunnels(game_map, rooms)
+    generate_doors(game_map, rooms)
 
     mobs = generate_mobs(rooms[1:], 3)
 
@@ -139,3 +142,20 @@ def generate_tunnels(game_map, rooms):
             create_h_tunnel(game_map, prev_x, new_x, new_y)
 
         prev_room = r
+
+#FIXME: this is a temp. door generation algorithm
+def generate_doors(game_map, rooms):
+    for r in rooms:
+        for x in range(r.x1, r.x2):
+            for y in (r.y1, r.y2):
+                if game_map.walkable[x, y]:
+                    game_map.doors[x, y] = 'h'
+                    game_map.transparent[x, y] = False
+        for y in range(r.y1, r.y2):
+            for x in (r.x1, r.x2):
+                if game_map.walkable[x, y]:
+                    game_map.doors[x, y] = 'v'
+                    game_map.transparent[x, y] = False
+
+
+
