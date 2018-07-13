@@ -5,7 +5,9 @@ from rendering import RenderOrder
 class Entity():
     """Top level generic object for allmost anything"""
     def __init__(self, x, y, rep, color, name,
-                 render_order=RenderOrder.CORPSE, blocks=False, combat=None, ai=None):
+                 render_order=RenderOrder.CORPSE, 
+                 blocks=False, combat=None, ai=None,
+                 item=None, inventory=None):
         self.x = x
         self.y = y
         self.rep = rep  # character that represents this
@@ -15,11 +17,17 @@ class Entity():
         self.combat = combat
         self.ai = ai
         self.render_order = render_order
+        self.item = item
+        self.inventory = inventory
 
         if self.combat:
             self.combat.owner = self
         if self.ai:
             self.ai.owner = self
+        if self.item:
+            self.item.owner = self
+        if self.inventory:
+            self.inventory.owner = self
 
     def move(self, dx, dy):
         self.x += dx
