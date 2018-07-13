@@ -12,7 +12,7 @@ class Player(Entity):
                                      color('WHITE_BOLD'), name,
                                      combat=combat,
                                      render_order=RenderOrder.ACTOR,
-                                     )
+                                     inventory=inventory)
         self.fov_radius = 8
 
     @property

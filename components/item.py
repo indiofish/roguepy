@@ -1,3 +1,3 @@
 class Item(object):
-    def __init__(self, arg):
+    def __init__(self):
         pass

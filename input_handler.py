@@ -20,6 +20,8 @@ def handle_input(win):
         return {'move': (-1, 1)}
     elif user_input == 'n':
         return {'move': (1, 1)}
+    elif user_input == 'g':
+        return {'pickup': True}
     else:
         return {'exit': True}
 

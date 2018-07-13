@@ -73,6 +73,7 @@ def main(stdscr):
                              player, base_width, base_height, msgbox, bar_win)
         action = input_handler.handle_input(win)
         mv = action.get('move')
+        pickup = action.get('pickup')
 
         player_turn_results = []
 
@@ -91,13 +92,30 @@ def main(stdscr):
                     player.move(dx, dy)
                     game_map.compute_fov(player)
 
-            game_state = GameStates.ENEMY_TURN
+        elif pickup and game_state == GameStates.PLAYERS_TURN:
+            for e in entities:
+                if e.item and e.x == player.x and e.y == player.y:
+                    pickup_results = player.inventory.add_item(e)
+                    player_turn_results.extend(pickup_results)
+
+                    # only acquire one item at one turn
+                    break
+        
+            else:
+                msgbox.add("no_item")
+
+        # before evaluating the results, change first
+        game_state = GameStates.ENEMY_TURN
 
         for result in player_turn_results:
             msg = result.get('msg')
             dead_entity = result.get('dead')
+            item_added = result.get('item_added')
             if msg:
                 msgbox.add(msg)
+            if item_added:
+                entities.remove(item_added)
+
             if dead_entity == player:
                 game_state = GameStates.PLAYER_DEAD
 
