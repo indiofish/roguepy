@@ -1,8 +1,12 @@
 from tdl.map import Map
 from random import randint
 from mobs import Mob
+from entity import Entity
 from components.combat import Combat
 from components.ai import BasicMonster
+import tileset
+from colors import color
+from rendering import RenderOrder
 
 
 class GameMap(Map):
@@ -60,8 +64,10 @@ def generate_map(game_map, max_rooms, room_min_size, room_max_size, player,
     generate_doors(game_map, rooms)
 
     mobs = generate_mobs(rooms[1:], 3)
+    items = generate_items(rooms, 2)
 
     entities += mobs
+    entities += items
 
     # place the player in the first room made
     player.x, player.y = rooms[0].center()
@@ -87,6 +93,29 @@ def generate_mobs(rooms, max_mobs_per_room):
 
     # extract mob(values) from mobs(dict)
     return list(mobs.values())
+
+
+def generate_items(rooms, max_items_per_room):
+
+        # we use dictionary here for the same reason as mobs
+        items = {}
+
+        for room in rooms:
+            n_of_items = randint(0, max_items_per_room)
+            for i in range(n_of_items):
+                # +-1 since we cannot place items in walls
+                x = randint(room.x1 + 1, room.x2 - 1)
+                y = randint(room.y1 + 1, room.y2 - 1)
+                items[x, y] = Entity(x, y, tileset.POTION, color('MAGENTA'),
+                                     'healing_potion',
+                                     render_order=RenderOrder.ITEM)
+
+        return list(items.values())
+
+
+
+
+
 
 
 def generate_rooms(game_map, max_rooms, room_min_size, room_max_size):
@@ -156,6 +185,3 @@ def generate_doors(game_map, rooms):
                 if game_map.walkable[x, y]:
                     game_map.doors[x, y] = 'v'
                     game_map.transparent[x, y] = False
-
-
-
