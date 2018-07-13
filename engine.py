@@ -10,6 +10,7 @@ from player import Player
 import tileset
 from game_states import GameStates
 from components.combat import Combat
+from components.inventory import Inventory
 from msgbox import MsgBox
 
 
@@ -17,9 +18,9 @@ def main(stdscr):
     # locale.setlocale(locale.LC_ALL, '')
 
     # constants related to rooms
-    room_max_size = 20
-    room_min_size = 10
-    max_rooms = 30
+    room_max_size = 15
+    room_min_size = 5
+    max_rooms = 15
 
     # constants related to padding size
     # either height/width has to be larger than their counterparts of map
@@ -35,7 +36,7 @@ def main(stdscr):
     base_height, base_width = stdscr.getmaxyx()
     # constants related to view size
     # TODO: change view size in relation to screen size
-    view_width = 80
+    view_width = 100
     view_height = 24
 
 
@@ -46,7 +47,7 @@ def main(stdscr):
     win = curses.newpad(height, width)
     win.bkgd(' ')
     # msgwin
-    msg_win = curses.newpad(10, 80)
+    msg_win = curses.newpad(10, 100)
     msgbox = MsgBox(msg_win, view_width, view_height, base_width, base_height)
 
     # bars
@@ -57,7 +58,8 @@ def main(stdscr):
 
 
     combat_module = Combat(hp=30, defense=2, power=5)
-    player = Player(combat_module)
+    inventory = Inventory(26)
+    player = Player(combat_module, inventory)
     entities = [player]
     game_map = maps.GameMap(map_width, map_height)
     maps.generate_map(game_map, max_rooms, room_min_size,

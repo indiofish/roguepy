@@ -6,11 +6,13 @@ from rendering import RenderOrder
 
 
 class Player(Entity):
-    def __init__(self, combat, name='Player', blocks=True):
+    def __init__(self, combat, inventory, name='Player', blocks=True):
+
         super(Player, self).__init__(0, 0, tileset.PLAYER,
                                      color('WHITE_BOLD'), name,
                                      combat=combat,
-                                     render_order=RenderOrder.ACTOR)
+                                     render_order=RenderOrder.ACTOR,
+                                     )
         self.fov_radius = 8
 
     @property
