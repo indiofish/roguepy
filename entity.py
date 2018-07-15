@@ -29,6 +29,9 @@ class Entity():
         if self.inventory:
             self.inventory.owner = self
 
+    def __str__(self):
+        return self.name
+
     def move(self, dx, dy):
         self.x += dx
         self.y += dy
