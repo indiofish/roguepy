@@ -3,7 +3,7 @@ import tileset
 from enum import Enum
 from game_states import GameStates
 from curses import doupdate
-from menus import menu
+from menus import inventory_menu
 from utils import center_position
 import curses
 
@@ -34,7 +34,7 @@ def render_all(win, entities, game_map, width, height, player,
     win.noutrefresh(start_y, start_x, pos_y, pos_x, height+pos_y, width+pos_x)
     msgbox.print()
     if game_state == GameStates.SHOW_INVENTORY:
-        menu(win, 1, "hi", [1,2,3], 30, base_w, base_h)
+        inventory_menu(win, player.inventory, 30, base_w, base_h, 1)
 
 
     doupdate()
