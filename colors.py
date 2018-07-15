@@ -19,6 +19,7 @@ color_names = {
     'CYAN_BOLD' : 15,
     'WHITE_BOLD' : 16,
     'DARK_GRAY' : 237,
+    'DARKER_GRAY': 235,
     'LIGHT_GRAY' : 241,
     'DARK_RED' : 89,
     'BROWN': 95,

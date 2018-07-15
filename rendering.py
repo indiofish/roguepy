@@ -109,4 +109,4 @@ def draw_map(win, game_map):
                 win.addch(y, x, tileset.V_DOOR, color('BROWN'))
 
         else:
-            win.addch(y, x, '#', color('DARK_GRAY'))
+            win.addch(y, x, '#', color('DARKER_GRAY'))
