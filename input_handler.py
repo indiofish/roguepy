@@ -1,7 +1,28 @@
 import curses
+from game_states import GameStates
 
 
-def handle_input(win):
+def handle_input(win, game_state):
+    if game_state == GameStates.PLAYERS_TURN:
+        return handle_player_turn_input(win)
+    elif game_state == GameStates.PLAYER_DEAD:
+        pass
+    elif game_state == GameStates.SHOW_INVENTORY:
+        return handle_inventory_input(win)
+    else:
+        return {}
+
+
+def handle_inventory_input(win):
+    user_input = win.getkey()
+    if user_input == 'i':
+        return {'show_inventory': True}
+    elif user_input == '1':
+        return 3/0
+    else:
+        return {}
+
+def handle_player_turn_input(win):
     user_input = win.getkey()
     # Movement keys
     if user_input == 'k' or user_input == 'KEY_UP':

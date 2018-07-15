@@ -73,7 +73,7 @@ def main(stdscr):
         rendering.render_all(win, entities, game_map, view_width, view_height,
                              player, base_width, base_height, msgbox, bar_win,
                              game_state)
-        action = input_handler.handle_input(win)
+        action = input_handler.handle_input(win, game_state)
 
         mv = action.get('move')
         pickup = action.get('pickup')
@@ -101,7 +101,8 @@ def main(stdscr):
                 if e.item and e.x == player.x and e.y == player.y:
                     pickup_results = player.inventory.add_item(e)
                     player_turn_results.extend(pickup_results)
-                    # only acquire one item at one turn break
+                    # only acquire one item at one turn 
+                    break
             else:
                 #FIXME: this is displayed even when acquiring item
                 msgbox.add("no_item")
@@ -118,19 +119,20 @@ def main(stdscr):
             # break
             pass
 
+        # evaluate results of player turn
         for result in player_turn_results:
             movement = result.get('move')
-            msg = result.get('msg')
             dead_entity = result.get('dead')
             item_added = result.get('item_added')
+            msg = result.get('msg')
             if movement:
                 dx, dy = movement
                 player.move(dx, dy)
                 game_map.compute_fov(player)
-            if msg:
-                msgbox.add(msg)
             if item_added:
                 entities.remove(item_added)
+            if msg:
+                msgbox.add(msg)
             if dead_entity == player:
                 game_state = GameStates.PLAYER_DEAD
 
