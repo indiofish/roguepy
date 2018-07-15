@@ -15,7 +15,8 @@ class RenderOrder(Enum):
 
 
 def render_all(win, entities, game_map, width, height, player,
-               base_w, base_h, msgbox, panel, game_state):
+               base_w, base_h, msgbox, panel, 
+               inven_cursor, inven_page, game_state):
 
     draw_map(win, game_map)
 
@@ -34,10 +35,11 @@ def render_all(win, entities, game_map, width, height, player,
     win.noutrefresh(start_y, start_x, pos_y, pos_x, height+pos_y, width+pos_x)
     msgbox.print()
     if game_state == GameStates.SHOW_INVENTORY:
-        inventory_menu(win, player.inventory, 30, base_w, base_h, 1)
-
-
+        inventory_menu(win, player.inventory, 30, base_w, base_h, 
+                       inven_cursor, inven_page)
     doupdate()
+
+
 
 
 def view_position(game_map_w, game_map_h, width, height, player_x, player_y):

@@ -7,7 +7,8 @@ from math import ceil
 from utils import center_position
 
 
-def menu(con, header, options, width, screen_width, screen_height, page):
+def menu(con, header, options, width, screen_width, screen_height, 
+         cursor, page):
     """ show a menu that uses single digits for hotkeys
     and this menu has pages """
 
@@ -16,7 +17,10 @@ def menu(con, header, options, width, screen_width, screen_height, page):
     header_wrapped = textwrap.wrap(header, width)
     header_height = len(header_wrapped)
     height = contents_per_page + 2 # +2 for border
-    total_page = ceil(len(options) / contents_per_page)
+
+    # max(1, X) for cases where there are no items
+    # total_page will still be 1
+    total_page = max(1, ceil(len(options) / contents_per_page))
 
     pos_x, pos_y = center_position(width, height, screen_width, screen_height)
 
@@ -29,6 +33,9 @@ def menu(con, header, options, width, screen_width, screen_height, page):
     win.border()
     win.overlay(con)
 
+    cursor = cursor % contents_per_page
+    page = (page % total_page) + 1
+
     # display title
     for i, l in enumerate(header_wrapped):
         win.addstr(0, i+1, l)
@@ -38,19 +45,25 @@ def menu(con, header, options, width, screen_width, screen_height, page):
 
     # 0~9 for first page, 10~19 for second page...
     start_idx = (page-1) * contents_per_page
+
+
     for i, option in enumerate(options[start_idx: 
                                        start_idx+contents_per_page]):
         txt = '(' + str(i) + '): ' + str(option)
-        win.addstr(i+1, 1, txt)
-        txt_win.addstr(1, 1, "DUMMYSTRING")
+
+        if cursor == i:
+            win.addstr(i+1, 1, txt, curses.A_REVERSE)
+            if hasattr(option, 'flavor_text'):
+                txt_win.addstr(1, 1, option.flavor_text)
+        else:
+            win.addstr(i+1, 1, txt)
 
     win.noutrefresh()
 
 def inventory_menu(con, inventory, width, 
-                   screen_width, screen_height, page):
+                   screen_width, screen_height, 
+                   cursor, page):
 
     items = [i for i in inventory.items] 
-    menu(con, "INVENTORY", items, width, screen_width, screen_height, 1)
-
-
-
+    menu(con, "INVENTORY", range(30), width, screen_width, screen_height, cursor,
+         page)

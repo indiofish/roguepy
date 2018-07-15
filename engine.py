@@ -16,6 +16,7 @@ from msgbox import MsgBox
 
 def main(stdscr):
     # locale.setlocale(locale.LC_ALL, '')
+    curses.nonl()
 
     # constants related to rooms
     room_max_size = 15
@@ -45,6 +46,7 @@ def main(stdscr):
     curses.curs_set(0)  # hide cursor
     # win has to be a pad, so that scrolling is easily supported
     win = curses.newpad(height, width)
+    win.keypad(True)
     win.bkgd(' ')
     # msgwin
     msg_win = curses.newpad(10, 100)
@@ -69,20 +71,27 @@ def main(stdscr):
     previous_game_state = game_state
     # initial compute of fov
     game_map.compute_fov(player)
+    inventory_cursor = 0  # -1 because cursor shouldn't be seen on default
+    inventory_page = 0
     while True:
         rendering.render_all(win, entities, game_map, view_width, view_height,
                              player, base_width, base_height, msgbox, bar_win,
-                             game_state)
+                             inventory_cursor, inventory_page, game_state)
         action = input_handler.handle_input(win, game_state)
 
         mv = action.get('move')
         pickup = action.get('pickup')
         show_inventory = action.get('show_inventory')
+        hide_inventory = action.get('hide_inventory')
+        item_at_cursor = action.get('item_at_cursor')
+        inventory_index = action.get('inventory_index')
+        move_cursor = action.get('move_cursor')
+        move_page = action.get('move_page')
         exit = action.get('exit')
 
         player_turn_results = []
 
-        if mv and game_state == GameStates.PLAYERS_TURN:
+        if mv:
             dx, dy = mv
             dest_x = player.x + dx
             dest_y = player.y + dy
@@ -95,8 +104,7 @@ def main(stdscr):
                 else:
                     move_results = {'move': mv}
                     player_turn_results.append(move_results)
-
-        elif pickup and game_state == GameStates.PLAYERS_TURN:
+        elif pickup:
             for e in entities:
                 if e.item and e.x == player.x and e.y == player.y:
                     pickup_results = player.inventory.add_item(e)
@@ -104,17 +112,21 @@ def main(stdscr):
                     # only acquire one item at one turn 
                     break
             else:
-                #FIXME: this is displayed even when acquiring item
                 msgbox.add("no_item")
-
-        elif show_inventory:  # Toggle Inventory screen
-            if game_state == GameStates.SHOW_INVENTORY:
-                game_state = previous_game_state
-            else:
-                msgbox.add("open inven")
-                previous_game_state = game_state
-                game_state = GameStates.SHOW_INVENTORY
-        if exit:
+        # Toggle Inventory screen
+        elif show_inventory:
+            msgbox.add("open inven")
+            previous_game_state = game_state
+            game_state = GameStates.SHOW_INVENTORY
+        # FIXME: cursor, page should have a value limit
+        # and it probably should be handled by menus, not here
+        elif move_cursor:
+            inventory_cursor += move_cursor
+        elif move_page:
+            inventory_page += move_page
+        elif hide_inventory:
+            game_state = previous_game_state
+        elif exit:
             # quit game
             # break
             pass
