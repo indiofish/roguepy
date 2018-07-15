@@ -21,7 +21,11 @@ def menu(con, header, options, width, screen_width, screen_height, page):
     pos_x, pos_y = center_position(width, height, screen_width, screen_height)
 
     # Note: might change to subwin, relative to game screen
-    win = curses.newwin(height, width, pos_y, pos_x)
+    # +5 for text window
+    win = curses.newwin(height+5, width, pos_y, pos_x)
+    txt_win = win.subwin(pos_y+height, pos_x)
+
+    txt_win.border()
     win.border()
     win.overlay(con)
 
@@ -38,6 +42,7 @@ def menu(con, header, options, width, screen_width, screen_height, page):
                                        start_idx+contents_per_page]):
         txt = '(' + str(i) + '): ' + str(option)
         win.addstr(i+1, 1, txt)
+        txt_win.addstr(1, 1, "DUMMYSTRING")
 
     win.noutrefresh()
 
