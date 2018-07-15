@@ -87,15 +87,14 @@ def main(stdscr):
             dest_x = player.x + dx
             dest_y = player.y + dy
 
-            if game_map.walkable[player.x+dx, player.y+dy]:
+            if game_map.walkable[dest_x, dest_y]:
                 target = blocking_entity_at_position(entities, dest_x, dest_y)
-
                 if target:
                     atk_results = player.combat.attack(target)
                     player_turn_results.extend(atk_results)
                 else:
-                    player.move(dx, dy)
-                    game_map.compute_fov(player)
+                    move_results = {'move': mv}
+                    player_turn_results.append(move_results)
 
         elif pickup and game_state == GameStates.PLAYERS_TURN:
             for e in entities:
@@ -104,7 +103,7 @@ def main(stdscr):
                     player_turn_results.extend(pickup_results)
                     # only acquire one item at one turn break
             else:
-                #FIXME
+                #FIXME: this is displayed even when acquiring item
                 msgbox.add("no_item")
 
         elif show_inventory:  # Toggle Inventory screen
@@ -119,26 +118,31 @@ def main(stdscr):
             # break
             pass
 
-        # before evaluating the results, change first
-        # game_state = GameStates.ENEMY_TURN
         for result in player_turn_results:
+            movement = result.get('move')
             msg = result.get('msg')
             dead_entity = result.get('dead')
             item_added = result.get('item_added')
+            if movement:
+                dx, dy = movement
+                player.move(dx, dy)
+                game_map.compute_fov(player)
             if msg:
                 msgbox.add(msg)
             if item_added:
                 entities.remove(item_added)
-
             if dead_entity == player:
                 game_state = GameStates.PLAYER_DEAD
+
+            # toggle state only when something is done in PLAYERS_TURN 
+            game_state = GameStates.ENEMY_TURN
 
         if game_state == GameStates.ENEMY_TURN:
             # move those with ai modules
             enemies = (e for e in entities if e.ai)
             for e in enemies:
-                e_turn_results = e.ai.take_turn(player, game_map, entities)
 
+                e_turn_results = e.ai.take_turn(player, game_map, entities)
 
                 # still a bit WET!
                 for result in e_turn_results:
