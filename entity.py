@@ -19,6 +19,7 @@ class Entity():
         self.render_order = render_order
         self.item = item
         self.inventory = inventory
+        self.flavor_text = name+"DUMMYTEXT"
 
         if self.combat:
             self.combat.owner = self
