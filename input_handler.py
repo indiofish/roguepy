@@ -22,6 +22,10 @@ def handle_input(win):
         return {'move': (1, 1)}
     elif user_input == 'g':
         return {'pickup': True}
+    elif user_input == 'i':
+        return {'show_inventory': True}
+    elif user_input =='q':
+        return {'exit': True}
     else:
         return {'exit': True}
 

@@ -66,14 +66,19 @@ def main(stdscr):
                       room_max_size, player, entities)
 
     game_state = GameStates.PLAYERS_TURN
+    previous_game_state = game_state
     # initial compute of fov
     game_map.compute_fov(player)
     while True:
         rendering.render_all(win, entities, game_map, view_width, view_height,
-                             player, base_width, base_height, msgbox, bar_win)
+                             player, base_width, base_height, msgbox, bar_win,
+                             game_state)
         action = input_handler.handle_input(win)
+
         mv = action.get('move')
         pickup = action.get('pickup')
+        show_inventory = action.get('show_inventory')
+        exit = action.get('exit')
 
         player_turn_results = []
 
@@ -97,16 +102,25 @@ def main(stdscr):
                 if e.item and e.x == player.x and e.y == player.y:
                     pickup_results = player.inventory.add_item(e)
                     player_turn_results.extend(pickup_results)
-
-                    # only acquire one item at one turn
-                    break
-        
+                    # only acquire one item at one turn break
             else:
+                #FIXME
                 msgbox.add("no_item")
 
-        # before evaluating the results, change first
-        game_state = GameStates.ENEMY_TURN
+        elif show_inventory:  # Toggle Inventory screen
+            if game_state == GameStates.SHOW_INVENTORY:
+                game_state = previous_game_state
+            else:
+                msgbox.add("open inven")
+                previous_game_state = game_state
+                game_state = GameStates.SHOW_INVENTORY
+        if exit:
+            # quit game
+            # break
+            pass
 
+        # before evaluating the results, change first
+        # game_state = GameStates.ENEMY_TURN
         for result in player_turn_results:
             msg = result.get('msg')
             dead_entity = result.get('dead')
@@ -139,6 +153,8 @@ def main(stdscr):
         # check whether to return to beginning of loop
         if game_state == GameStates.PLAYER_DEAD:
             break
+        elif game_state == GameStates.SHOW_INVENTORY:
+            pass
         else:
             game_state = GameStates.PLAYERS_TURN
 
