@@ -65,5 +65,5 @@ def inventory_menu(con, inventory, width,
                    cursor, page):
 
     items = [i for i in inventory.items] 
-    menu(con, "INVENTORY", range(30), width, screen_width, screen_height, cursor,
+    menu(con, "INVENTORY", items, width, screen_width, screen_height, cursor,
          page)
