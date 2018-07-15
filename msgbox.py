@@ -1,5 +1,5 @@
 # import colors
-from rendering import main_window_position
+from utils import center_position
 
 
 class MsgBox():
@@ -20,8 +20,8 @@ class MsgBox():
         self.win.border()
 
     def refresh(self):
-        pos_x, pos_y = main_window_position(self.main_w, self.main_h,
-                                            self.base_w, self.base_h)
+        pos_x, pos_y = center_position(self.main_w, self.main_h,
+                                       self.base_w, self.base_h)
         y = self.main_h + pos_y
         win_h, win_w = self.win.getmaxyx()
 

@@ -4,6 +4,7 @@ from enum import Enum
 from game_states import GameStates
 from curses import doupdate
 from menus import menu
+from utils import center_position
 import curses
 
 class RenderOrder(Enum):
@@ -28,7 +29,7 @@ def render_all(win, entities, game_map, width, height, player,
 
     start_x, start_y = view_position(game_map.width, game_map.height,
                                      width, height, player_x, player_y)
-    pos_x, pos_y = main_window_position(width, height, base_w, base_h)
+    pos_x, pos_y = center_position(width, height, base_w, base_h)
     render_bar(panel, player.combat.hp, player.combat.max_hp, 'HP')
     win.noutrefresh(start_y, start_x, pos_y, pos_x, height+pos_y, width+pos_x)
     msgbox.print()
@@ -46,13 +47,6 @@ def view_position(game_map_w, game_map_h, width, height, player_x, player_y):
 
     return (start_x, start_y)
 
-
-def main_window_position(width, height, base_w, base_h):
-    """The position window will be displayed, relative to the stdscr"""
-    pos_x = (base_w - width) // 2
-    pos_y = (base_h - height) // 2
-
-    return (pos_x, pos_y)
 
 def render_bar(panel, value, maximum, name):
     #TODO: remove magic numbers & clean up
