@@ -33,7 +33,7 @@ def menu(con, header, options, width, screen_width, screen_height,
     win.border()
     win.overlay(con)
 
-    cursor = cursor % contents_per_page
+    cursor = cursor % min(len(options), contents_per_page)
     page = (page % total_page) + 1
 
     # display title
