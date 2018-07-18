@@ -12,6 +12,7 @@ from game_states import GameStates
 from components.combat import Combat
 from components.inventory import Inventory
 from msgbox import MsgBox
+from menus import Menu
 
 
 def main(stdscr):
@@ -71,12 +72,11 @@ def main(stdscr):
     previous_game_state = game_state
     # initial compute of fov
     game_map.compute_fov(player)
-    inventory_cursor = 0  # -1 because cursor shouldn't be seen on default
-    inventory_page = 0
+    inventory_menu = Menu(win, "INVENTORY", 30, base_width, base_height)
     while True:
         rendering.render_all(win, entities, game_map, view_width, view_height,
                              player, base_width, base_height, msgbox, bar_win,
-                             inventory_cursor, inventory_page, game_state)
+                             inventory_menu, game_state)
         action = input_handler.handle_input(win, game_state)
 
         mv = action.get('move')
@@ -118,12 +118,12 @@ def main(stdscr):
             msgbox.add("open inven")
             previous_game_state = game_state
             game_state = GameStates.SHOW_INVENTORY
-        # FIXME: cursor, page should have a value limit
-        # and it probably should be handled by menus, not here
+            # FIXME: cursor, page should have a value limit
+            # and it probably should be handled by menus, not here
         elif move_cursor:
-            inventory_cursor += move_cursor
+            inventory_menu.next_item(move_cursor)
         elif move_page:
-            inventory_page += move_page
+            inventory_menu.next_page(move_page)
         elif hide_inventory:
             game_state = previous_game_state
         elif exit:

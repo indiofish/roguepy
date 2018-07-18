@@ -7,63 +7,73 @@ from math import ceil
 from utils import center_position
 
 
-def menu(con, header, options, width, screen_width, screen_height, 
-         cursor, page):
+class Menu():
     """ show a menu that uses single digits for hotkeys
     and this menu has pages """
+    def __init__(self, con, title, width, screen_width, screen_height):
 
-    contents_per_page = 10  # use single digits for hotkeys
+        # use single digits for hotkeys
+        self.contents_per_page = 10
+        self.cursor = 0
+        self.page = 0
 
-    header_wrapped = textwrap.wrap(header, width)
-    header_height = len(header_wrapped)
-    height = contents_per_page + 2 # +2 for border
+        self.title_wrapped = textwrap.wrap(title, width)
+        self.title_height = len(self.title_wrapped)
+        self.width = width
+        self.height = self.contents_per_page + 1 # +1 for border
+        pos_x, pos_y = center_position(width, self.height, screen_width, screen_height)
 
-    # max(1, X) for cases where there are no items
-    # total_page will still be 1
-    total_page = max(1, ceil(len(options) / contents_per_page))
-
-    pos_x, pos_y = center_position(width, height, screen_width, screen_height)
-
-    # Note: might change to subwin, relative to game screen
-    # +5 for text window
-    win = curses.newwin(height+5, width, pos_y, pos_x)
-    txt_win = win.subwin(pos_y+height, pos_x)
-
-    txt_win.border()
-    win.border()
-    win.overlay(con)
-
-    cursor = cursor % min(len(options), contents_per_page)
-    page = (page % total_page) + 1
-
-    # display title
-    for i, l in enumerate(header_wrapped):
-        win.addstr(0, i+1, l)
-
-    # display page number
-    win.addstr(0, width-3-1, "{0}/{1}".format(page, total_page))
-
-    # 0~9 for first page, 10~19 for second page...
-    start_idx = (page-1) * contents_per_page
+        self.win = curses.newwin(self.height+5,width,pos_y,pos_x)
+        self.txt_win = self.win.subwin(pos_y+self.height, pos_x)
 
 
-    for i, option in enumerate(options[start_idx: 
-                                       start_idx+contents_per_page]):
-        txt = '(' + str(i) + '): ' + str(option)
+        self.cursor = 0
+        self.page = 0
+        self.options = []
+        self.total_page = 1
 
-        if cursor == i:
-            win.addstr(i+1, 1, txt, curses.A_REVERSE)
-            if hasattr(option, 'flavor_text'):
-                txt_win.addstr(1, 1, option.flavor_text)
-        else:
-            win.addstr(i+1, 1, txt)
+    def display(self, options):
+        self.win.erase()
+        self.txt_win.border()
+        self.win.border()
 
-    win.noutrefresh()
 
-def inventory_menu(con, inventory, width, 
-                   screen_width, screen_height, 
-                   cursor, page):
+        for i, l in enumerate(self.title_wrapped):
+            self.win.addstr(0, i+1, l)
+        self.options = options
+        self.total_page = max(1, ceil(len(self.options) / self.contents_per_page))
 
-    items = [i for i in inventory.items] 
-    menu(con, "INVENTORY", items, width, screen_width, screen_height, cursor,
-         page)
+        # display page number
+        self.win.addstr(0, self.width-3-1,
+                        "{0}/{1}".format(self.page+1, self.total_page))
+
+        # 0~9 for first page, 10~19 for second page...
+        start_idx = self.page * self.contents_per_page
+
+
+        for i, option in enumerate(self.options[start_idx: 
+                                                start_idx+self.contents_per_page]):
+            txt = '(' + str(i) + '): ' + str(option)
+
+            #FIXME: clean up screen for remaining characters
+            if self.cursor == i:
+                self.win.addstr(i+1, 1, txt, curses.A_REVERSE)
+                if hasattr(option, 'flavor_text'):
+                    self.txt_win.addstr(1, 1, option.flavor_text)
+            else:
+                self.win.addstr(i+1, 1, txt)
+
+        self.win.noutrefresh()
+
+    def hide():
+        pass
+
+    def next_item(self, idx):
+        #cursor only moves when there is a item in menu
+        if self.options:
+            self.cursor += idx
+            self.cursor = self.cursor % min(len(self.options), self.contents_per_page)
+
+    def next_page(self, idx):
+        self.page += idx
+        self.page = self.page % self.total_page

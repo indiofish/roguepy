@@ -3,8 +3,8 @@ import tileset
 from enum import Enum
 from game_states import GameStates
 from curses import doupdate
-from menus import inventory_menu
 from utils import center_position
+from menus import Menu
 import curses
 
 class RenderOrder(Enum):
@@ -15,8 +15,8 @@ class RenderOrder(Enum):
 
 
 def render_all(win, entities, game_map, width, height, player,
-               base_w, base_h, msgbox, panel, 
-               inven_cursor, inven_page, game_state):
+               base_w, base_h, msgbox, panel, inventory_menu,
+               game_state):
 
     draw_map(win, game_map)
 
@@ -34,9 +34,9 @@ def render_all(win, entities, game_map, width, height, player,
     render_bar(panel, player.combat.hp, player.combat.max_hp, 'HP')
     win.noutrefresh(start_y, start_x, pos_y, pos_x, height+pos_y, width+pos_x)
     msgbox.print()
+
     if game_state == GameStates.SHOW_INVENTORY:
-        inventory_menu(win, player.inventory, 30, base_w, base_h, 
-                       inven_cursor, inven_page)
+        inventory_menu.display(player.inventory.items)
     doupdate()
 
 
