@@ -68,6 +68,13 @@ class Menu():
     def hide():
         pass
 
+    def item_at_cursor(self):
+        return self.options[self.cursor]
+
+    def item_at(self, idx):
+        if idx < len(self.options):
+            return self.options[idx]
+
     def next_item(self, idx):
         #cursor only moves when there is a item in menu
         if self.options:
