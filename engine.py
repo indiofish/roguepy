@@ -120,16 +120,28 @@ def main(stdscr):
             game_state = GameStates.SHOW_INVENTORY
             # FIXME: cursor, page should have a value limit
             # and it probably should be handled by menus, not here
-        elif move_cursor:
-            inventory_menu.next_item(move_cursor)
-        elif move_page:
-            inventory_menu.next_page(move_page)
-        elif hide_inventory:
-            game_state = previous_game_state
         elif exit:
             # quit game
             # break
             pass
+        if GameStates.SHOW_INVENTORY:
+            if move_cursor:
+                inventory_menu.next_item(move_cursor)
+            elif move_page:
+                inventory_menu.next_page(move_page)
+            elif hide_inventory:
+                game_state = previous_game_state
+            elif item_at_cursor:
+                item = inventory_menu.item_at_cursor()
+                use_results = player.inventory.use_item(item)
+                player_turn_results.extend(use_results)
+            elif inventory_index is not None:
+                # unlike other inputs, inventory_index can be 0,
+                # so compare it with "None"
+                # check will cause input 0 to be ignored
+                item = inventory_menu.item_at(inventory_index)
+                use_results = player.inventory.use_item(item)
+                player_turn_results.extend(use_results)
 
         # evaluate results of player turn
         for result in player_turn_results:
