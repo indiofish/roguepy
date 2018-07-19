@@ -5,6 +5,7 @@ from entity import Entity
 from components.combat import Combat
 from components.ai import BasicMonster
 from components.item import Item
+import item_functions
 import tileset
 from colors import color
 from rendering import RenderOrder
@@ -107,7 +108,8 @@ def generate_items(rooms, max_items_per_room):
                 # +-1 since we cannot place items in walls
                 x = randint(room.x1 + 1, room.x2 - 1)
                 y = randint(room.y1 + 1, room.y2 - 1)
-                item_component = Item()
+                item_component = Item(use_function=item_functions.heal,
+                                      amount=4)
                 items[x, y] = Entity(x, y, tileset.POTION, color('MAGENTA'),
                                      'healing_potion',
                                      render_order=RenderOrder.ITEM,
