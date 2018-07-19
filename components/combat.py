@@ -34,3 +34,7 @@ class Combat():
             results.append(txt)
 
         return results
+
+    def heal(self, amount):
+        # if it exceeds max_hp, then only heal upto max_hp
+        self.hp = min(self.hp+amount, self.max_hp)
