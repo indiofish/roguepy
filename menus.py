@@ -51,11 +51,12 @@ class Menu():
         start_idx = self.page * self.contents_per_page
 
 
-        for i, option in enumerate(self.options[start_idx: 
+        for i, option in enumerate(self.options[start_idx:
                                                 start_idx+self.contents_per_page]):
-            txt = '(' + str(i) + '): ' + str(option)
+            item, count = option
+            txt = "({0}): {1} x{2}".format(i, item, count)
+            # txt = '(' + str(i) + '): ' + str(item)
 
-            #FIXME: clean up screen for remaining characters
             if self.cursor == i:
                 self.win.addstr(i+1, 1, txt, curses.A_REVERSE)
                 if hasattr(option, 'flavor_text'):
@@ -69,11 +70,12 @@ class Menu():
         pass
 
     def item_at_cursor(self):
-        return self.options[self.cursor]
+        if self.cursor < len(self.options):
+            return self.options[self.cursor][0]
 
     def item_at(self, idx):
         if idx < len(self.options):
-            return self.options[idx]
+            return self.options[idx][0]
 
     def next_item(self, idx):
         #cursor only moves when there is a item in menu
