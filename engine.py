@@ -88,6 +88,8 @@ def main(stdscr):
         move_cursor = action.get('move_cursor')
         move_page = action.get('move_page')
         exit = action.get('exit')
+        
+        inventory_shown = False
 
         player_turn_results = []
 
@@ -151,6 +153,7 @@ def main(stdscr):
             dead_entity = result.get('dead')
             item_added = result.get('item_added')
             msg = result.get('msg')
+            item_used = result.get('item_used')
             if movement:
                 dx, dy = movement
                 player.move(dx, dy)
@@ -161,6 +164,9 @@ def main(stdscr):
                 msgbox.add(msg)
             if dead_entity == player:
                 game_state = GameStates.PLAYER_DEAD
+            if item_used:
+                inventory_shown = True
+
 
             # toggle state only when something is done in PLAYERS_TURN 
             game_state = GameStates.ENEMY_TURN
@@ -187,6 +193,9 @@ def main(stdscr):
             break
         elif game_state == GameStates.SHOW_INVENTORY:
             pass
+        #if item was used at screen, keep the inventory opened
+        elif inventory_shown:
+            game_state = GameStates.SHOW_INVENTORY
         else:
             game_state = GameStates.PLAYERS_TURN
 
