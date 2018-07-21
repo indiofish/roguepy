@@ -133,15 +133,17 @@ def main(stdscr):
                 game_state = previous_game_state
             elif item_at_cursor:
                 item = inventory_menu.item_at_cursor()
-                use_results = player.inventory.use_item(item)
-                player_turn_results.extend(use_results)
+                if item:  # TEMP FIX: check validity of choice at menu?
+                    use_results = player.inventory.use_item(item)
+                    player_turn_results.extend(use_results)
             elif inventory_index is not None:
                 # unlike other inputs, inventory_index can be 0,
                 # so compare it with "None"
                 # check will cause input 0 to be ignored
                 item = inventory_menu.item_at(inventory_index)
-                use_results = player.inventory.use_item(item)
-                player_turn_results.extend(use_results)
+                if item:
+                    use_results = player.inventory.use_item(item)
+                    player_turn_results.extend(use_results)
 
         # evaluate results of player turn
         for result in player_turn_results:
