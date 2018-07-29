@@ -58,11 +58,13 @@ class Menu():
             # txt = '(' + str(i) + '): ' + str(item)
 
             if self.cursor == i:
-                self.win.addstr(i+1, 1, txt, curses.A_REVERSE)
+                self.win.addch(i+1, 1, item.rep, item.color)
+                self.win.addstr(i+1, 3, txt, curses.A_REVERSE)
                 if hasattr(option, 'flavor_text'):
                     self.txt_win.addstr(1, 1, option.flavor_text)
             else:
-                self.win.addstr(i+1, 1, txt)
+                self.win.addch(i+1, 1, item.rep, item.color)
+                self.win.addstr(i+1, 3, txt)
 
         self.win.noutrefresh()
 
